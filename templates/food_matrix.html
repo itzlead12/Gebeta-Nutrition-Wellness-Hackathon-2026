@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Food Matrix - Gebeta Nutrition{% endblock %}
+{% block page_title %}Food Matrix{% endblock %}
+
+{% block content %}
+{% set active_category = request.args.get('category', '') %}
+{% set query = request.args.get('q', '') %}
+
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-[10px] font-black text-[#3b755f] uppercase tracking-wider">Ethiopian nutrition database</p>
+            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Find, compare, and log local foods.</h2>
+        </div>
+        <a href="{{ url_for('dashboard_overview') }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-[#ebdcc5] bg-white px-4 py-3 text-xs font-black text-[#1e2421] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3b755f] hover:text-[#3b755f]">
+            <i class="fa-solid fa-chart-pie"></i> Dashboard
+        </a>
+    </div>
+
+    <section class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-4 md:p-5 shadow-sm space-y-4">
+        <form method="GET" class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 text-sm"></i>
+                <input type="text" name="q" value="{{ query }}" placeholder="Search injera, shiro, gomen..." class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] py-3 pl-11 pr-4 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+            </div>
+            <button type="submit" class="rounded-xl bg-[#3b755f] px-5 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2f604d] hover:shadow-lg">Search</button>
+        </form>
+
+        <div class="flex gap-2 overflow-x-auto pb-1">
+            <a href="{{ url_for('food_matrix', q=query) }}" class="shrink-0 rounded-full px-4 py-2 text-xs font-black transition-all {{ 'bg-[#3b755f] text-white' if active_category == '' else 'bg-[#faf7f2] text-stone-600 hover:bg-[#3b755f]/10 hover:text-[#3b755f]' }}">All</a>
+            <a href="{{ url_for('food_matrix', q=query, category='grain') }}" class="shrink-0 rounded-full px-4 py-2 text-xs font-black transition-all {{ 'bg-[#3b755f] text-white' if active_category == 'grain' else 'bg-[#faf7f2] text-stone-600 hover:bg-[#3b755f]/10 hover:text-[#3b755f]' }}">Grains</a>
+            <a href="{{ url_for('food_matrix', q=query, category='legume') }}" class="shrink-0 rounded-full px-4 py-2 text-xs font-black transition-all {{ 'bg-[#3b755f] text-white' if active_category == 'legume' else 'bg-[#faf7f2] text-stone-600 hover:bg-[#3b755f]/10 hover:text-[#3b755f]' }}">Legumes</a>
+            <a href="{{ url_for('food_matrix', q=query, category='meat') }}" class="shrink-0 rounded-full px-4 py-2 text-xs font-black transition-all {{ 'bg-[#3b755f] text-white' if active_category == 'meat' else 'bg-[#faf7f2] text-stone-600 hover:bg-[#3b755f]/10 hover:text-[#3b755f]' }}">Meat</a>
+            <a href="{{ url_for('food_matrix', q=query, category='vegetable') }}" class="shrink-0 rounded-full px-4 py-2 text-xs font-black transition-all {{ 'bg-[#3b755f] text-white' if active_category == 'vegetable' else 'bg-[#faf7f2] text-stone-600 hover:bg-[#3b755f]/10 hover:text-[#3b755f]' }}">Vegetables</a>
+        </div>
+    </section>
+
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:hidden">
+        {% for food in foods %}
+            <article onclick="openFoodModal(this)" data-id="{{ food.id }}" data-name="{{ food.name_english }}" data-category="{{ food.food_category }}" data-calories="{{ food.calories_per_100g }}" data-protein="{{ food.protein_g }}" data-carbs="{{ food.carbs_g }}" data-fat="{{ food.fat_g }}" data-fiber="{{ food.fiber_g }}" data-iron="{{ food.iron_mg }}" data-calcium="{{ food.calcium_mg }}" data-gi="{{ food.glycemic_index }}" data-price="{{ food.avg_price_per_kg_etb }}" data-serving="{{ food.typical_serving_g }}" data-fasting="{{ 'Yes' if food.is_fasting_compatible else 'No' }}" class="cursor-pointer bg-white rounded-2xl border border-[#ebdcc5]/70 p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-black">{{ food.name_english }}</p>
+                        <p class="text-[11px] font-bold text-stone-400 capitalize">{{ food.food_category }}</p>
+                    </div>
+                    <span class="rounded-full bg-[#3b755f]/10 px-3 py-1 text-[10px] font-black text-[#3b755f]">{{ food.calories_per_100g|round(0) }} kcal</span>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+                    <div class="rounded-xl bg-[#faf7f2] p-3"><p class="text-[10px] font-black text-stone-400">Protein</p><p class="text-sm font-black">{{ food.protein_g }}g</p></div>
+                    <div class="rounded-xl bg-[#faf7f2] p-3"><p class="text-[10px] font-black text-stone-400">Price</p><p class="text-sm font-black">{{ food.avg_price_per_kg_etb }} ETB</p></div>
+                    <div class="rounded-xl bg-[#faf7f2] p-3"><p class="text-[10px] font-black text-stone-400">Fasting</p><p class="text-sm font-black">{{ 'Yes' if food.is_fasting_compatible else 'No' }}</p></div>
+                </div>
+                <button type="button" onclick="event.stopPropagation(); logMeal('{{ food.id }}', this)" class="mt-4 w-full rounded-xl bg-[#3b755f] px-4 py-3 text-xs font-black text-white transition-all duration-200 hover:bg-[#2f604d]">
+                    Log as meal
+                </button>
+            </article>
+        {% else %}
+            <div class="sm:col-span-2 rounded-2xl bg-white border border-dashed border-[#ebdcc5] p-8 text-center">
+                <p class="text-sm font-black">No foods found.</p>
+                <p class="mt-1 text-xs font-semibold text-stone-500">Try a different search or category.</p>
+            </div>
+        {% endfor %}
+    </section>
+
+    <section class="hidden lg:block bg-white rounded-2xl border border-[#ebdcc5]/70 shadow-sm overflow-hidden">
+        <table class="w-full text-left">
+            <thead class="bg-[#faf7f2] text-[10px] font-black uppercase tracking-wider text-stone-500">
+                <tr>
+                    <th class="px-5 py-4">Food</th>
+                    <th class="px-5 py-4">Calories</th>
+                    <th class="px-5 py-4">Protein</th>
+                    <th class="px-5 py-4">Category</th>
+                    <th class="px-5 py-4">Price</th>
+                    <th class="px-5 py-4 text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-[#ebdcc5]/60">
+                {% for food in foods %}
+                    <tr onclick="openFoodModal(this)" data-id="{{ food.id }}" data-name="{{ food.name_english }}" data-category="{{ food.food_category }}" data-calories="{{ food.calories_per_100g }}" data-protein="{{ food.protein_g }}" data-carbs="{{ food.carbs_g }}" data-fat="{{ food.fat_g }}" data-fiber="{{ food.fiber_g }}" data-iron="{{ food.iron_mg }}" data-calcium="{{ food.calcium_mg }}" data-gi="{{ food.glycemic_index }}" data-price="{{ food.avg_price_per_kg_etb }}" data-serving="{{ food.typical_serving_g }}" data-fasting="{{ 'Yes' if food.is_fasting_compatible else 'No' }}" class="cursor-pointer transition-colors hover:bg-[#faf7f2]">
+                        <td class="px-5 py-4">
+                            <p class="text-sm font-black">{{ food.name_english }}</p>
+                            <p class="text-[11px] font-bold text-stone-400">{{ food.region_of_origin }}</p>
+                        </td>
+                        <td class="px-5 py-4 text-sm font-bold">{{ food.calories_per_100g|round(0) }} kcal</td>
+                        <td class="px-5 py-4 text-sm font-bold">{{ food.protein_g }} g</td>
+                        <td class="px-5 py-4"><span class="rounded-full bg-[#3b755f]/10 px-3 py-1 text-[10px] font-black text-[#3b755f] capitalize">{{ food.food_category }}</span></td>
+                        <td class="px-5 py-4 text-sm font-bold">{{ food.avg_price_per_kg_etb }} ETB/kg</td>
+                        <td class="px-5 py-4 text-right">
+                            <button type="button" onclick="event.stopPropagation(); logMeal('{{ food.id }}', this)" class="rounded-xl bg-[#3b755f] px-4 py-2 text-xs font-black text-white transition-all duration-200 hover:bg-[#2f604d]">
+                                Log meal
+                            </button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="px-5 py-10 text-center text-sm font-black">No foods found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<div id="food-modal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-black/50 p-4">
+    <div class="w-full max-w-lg rounded-2xl bg-white shadow-2xl border border-[#ebdcc5] overflow-hidden">
+        <div class="flex items-start justify-between gap-4 border-b border-[#ebdcc5]/70 p-5">
+            <div>
+                <p id="modal-category" class="text-[10px] font-black uppercase tracking-wider text-[#3b755f]"></p>
+                <h3 id="modal-name" class="text-2xl font-black"></h3>
+            </div>
+            <button type="button" onclick="closeFoodModal()" class="h-9 w-9 rounded-xl bg-[#faf7f2] text-stone-500 transition hover:bg-stone-100 hover:text-[#1e2421]">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="p-5 space-y-4">
+            <div id="modal-details" class="grid grid-cols-2 gap-3"></div>
+            <div class="rounded-2xl bg-[#faf7f2] border border-[#ebdcc5]/60 p-4">
+                <p class="text-[10px] font-black uppercase tracking-wider text-stone-400">Tip</p>
+                <p class="mt-1 text-sm font-semibold text-stone-600">Use the meal log button with your real serving size for better dashboard totals.</p>
+            </div>
+            <button id="modal-log-button" type="button" onclick="logSelectedFood()" class="w-full rounded-xl bg-[#3b755f] px-4 py-3 text-sm font-black text-white transition-all duration-200 hover:bg-[#2f604d]">
+                Log this food
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let selectedFoodId = null;
+
+    function detailCard(label, value) {
+        return `<div class="rounded-xl bg-[#faf7f2] p-3 border border-[#ebdcc5]/50">
+            <p class="text-[10px] font-black uppercase tracking-wider text-stone-400">${label}</p>
+            <p class="mt-1 text-sm font-black text-[#1e2421]">${value}</p>
+        </div>`;
+    }
+
+    function openFoodModal(element) {
+        const data = element.dataset;
+        selectedFoodId = data.id;
+        document.getElementById('modal-name').textContent = data.name;
+        document.getElementById('modal-category').textContent = `${data.category} food`;
+        document.getElementById('modal-details').innerHTML = [
+            detailCard('Calories', `${data.calories} kcal / 100g`),
+            detailCard('Protein', `${data.protein} g`),
+            detailCard('Carbs', `${data.carbs} g`),
+            detailCard('Fat', `${data.fat} g`),
+            detailCard('Fiber', `${data.fiber} g`),
+            detailCard('Iron', `${data.iron} mg`),
+            detailCard('Calcium', `${data.calcium} mg`),
+            detailCard('Glycemic index', data.gi),
+            detailCard('Typical serving', `${data.serving} g`),
+            detailCard('Price', `${data.price} ETB/kg`),
+            detailCard('Fasting compatible', data.fasting),
+            detailCard('Category', data.category)
+        ].join('');
+        const modal = document.getElementById('food-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeFoodModal() {
+        const modal = document.getElementById('food-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    function logSelectedFood() {
+        if (selectedFoodId) {
+            logMeal(selectedFoodId, document.getElementById('modal-log-button'));
+        }
+    }
+
+    async function logMeal(foodId, button) {
+        const serving = prompt('Serving size in grams:', '150');
+        if (!serving) return;
+
+        const previousText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Logging...';
+
+        try {
+            const response = await fetch('/api/meals/log', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    food_id: Number(foodId),
+                    serving_size_g: Number(serving),
+                    meal_type: 'lunch'
+                })
+            });
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Unable to log meal');
+            }
+            button.textContent = `Logged ${data.calories} kcal`;
+            setTimeout(() => {
+                button.textContent = previousText;
+                button.disabled = false;
+            }, 1600);
+        } catch (error) {
+            alert(error.message);
+            button.textContent = previousText;
+            button.disabled = false;
+        }
+    }
+
+    document.getElementById('food-modal').addEventListener('click', function(event) {
+        if (event.target === this) closeFoodModal();
+    });
+</script>
+{% endblock %}

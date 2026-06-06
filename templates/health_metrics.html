@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Metrics - Gebeta Nutrition</title>
+</head>
+<body>
+    <h1>Health Metrics Tracking</h1>
+    
+    <h2>Log Today's Metrics</h2>
+    <form id="metrics-form">
+        <label>Weight (kg): <input type="number" id="weight" step="0.1"></label>
+        <label>Blood Sugar (mg/dL): <input type="number" id="blood_sugar"></label>
+        <label>BP Systolic: <input type="number" id="bp_systolic"></label>
+        <label>BP Diastolic: <input type="number" id="bp_diastolic"></label>
+        <label>Sleep (hours): <input type="number" id="sleep_hours" step="0.1"></label>
+        <label>Sleep Quality (1-10): <input type="number" id="sleep_quality" min="1" max="10"></label>
+        <label>Water (ml): <input type="number" id="water"></label>
+        <label>Steps: <input type="number" id="steps"></label>
+        <label>Activity (minutes): <input type="number" id="activity_minutes"></label>
+        <label>Activity Type: <input type="text" id="activity_type"></label>
+        <label>Mood (1-10): <input type="number" id="mood" min="1" max="10"></label>
+        <button type="submit">Log Metrics</button>
+    </form>
+    
+    <h2>Recent Metrics (Last 30 Days)</h2>
+    <div id="metrics-history"></div>
+    
+    <script>
+        document.getElementById('metrics-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('/api/health/metrics', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    weight_kg: document.getElementById('weight').value,
+                    blood_sugar: document.getElementById('blood_sugar').value,
+                    bp_systolic: document.getElementById('bp_systolic').value,
+                    bp_diastolic: document.getElementById('bp_diastolic').value,
+                    sleep_hours: document.getElementById('sleep_hours').value,
+                    sleep_quality: document.getElementById('sleep_quality').value,
+                    water_intake: document.getElementById('water').value,
+                    steps: document.getElementById('steps').value,
+                    activity_minutes: document.getElementById('activity_minutes').value,
+                    activity_type: document.getElementById('activity_type').value,
+                    mood_score: document.getElementById('mood').value
+                })
+            }).then(() => location.reload());
+        });
+        
+        fetch('/api/health/metrics')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('metrics-history').innerHTML = 
+                    data.map(m => `
+                        <div>
+                            <p>Date: ${m.recorded_at}</p>
+                            <p>Weight: ${m.weight_kg}kg | Sleep: ${m.sleep_hours}h | Water: ${m.water_intake_ml}ml | Mood: ${m.mood_score}/10</p>
+                        </div>
+                    `).join('');
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Kitchen Assistant - Gebeta Nutrition{% endblock %}
+{% block page_title %}Kitchen Assistant{% endblock %}
+
+{% block content %}
+{% if current_user_plan in ['plus', 'premium'] %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-[10px] font-black text-[#3b755f] uppercase tracking-wider">What's in my kitchen</p>
+            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Turn ingredients into meal ideas.</h2>
+        </div>
+        <a href="{{ url_for('food_matrix') }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-[#ebdcc5] bg-white px-4 py-3 text-xs font-black text-[#1e2421] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3b755f] hover:text-[#3b755f]">
+            <i class="fa-solid fa-utensils"></i> Food matrix
+        </a>
+    </div>
+
+    <section class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
+            <div class="relative">
+                <i class="fa-solid fa-carrot absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 text-sm"></i>
+                <input type="text" id="ingredient-input" placeholder="Add ingredient, e.g. injera, shiro, gomen" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] py-3 pl-11 pr-4 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+            </div>
+            <button type="button" onclick="addIngredient()" class="rounded-xl bg-[#3b755f] px-5 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2f604d] hover:shadow-lg">
+                Add Ingredient
+            </button>
+        </div>
+
+        <div id="ingredients-list" class="flex flex-wrap gap-2 min-h-11 rounded-2xl border border-dashed border-[#ebdcc5] bg-[#faf7f2] p-3"></div>
+
+        <div class="flex flex-wrap gap-2">
+            {% for item in ['injera', 'shiro', 'misir', 'gomen', 'kinche'] %}
+                <button type="button" onclick="quickAdd('{{ item }}')" class="rounded-full bg-[#3b755f]/10 px-4 py-2 text-xs font-black text-[#3b755f] transition hover:bg-[#3b755f] hover:text-white">{{ item|title }}</button>
+            {% endfor %}
+        </div>
+
+        <button type="button" onclick="getSuggestions()" class="w-full rounded-xl bg-[#3b755f] px-5 py-4 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2f604d] hover:shadow-lg">
+            Get Suggestions
+        </button>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section class="lg:col-span-2 bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-4">
+            <div>
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Possible meals</p>
+                <h3 class="text-lg font-black">Suggestions</h3>
+            </div>
+            <div id="suggestions" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="sm:col-span-2 rounded-2xl bg-[#faf7f2] border border-dashed border-[#ebdcc5] p-6 text-center">
+                    <p class="text-sm font-black">No suggestions yet.</p>
+                    <p class="mt-1 text-xs font-semibold text-stone-500">Add ingredients and run the assistant.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-[#1e2421] text-white rounded-2xl p-5 shadow-sm space-y-4">
+            <div>
+                <p class="text-[10px] font-black text-[#C7E86A] uppercase tracking-wider">Missing nutrients</p>
+                <h3 class="text-lg font-black">Nutrition gaps</h3>
+            </div>
+            <div id="deficiencies" class="space-y-3">
+                <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                    <p class="text-sm font-bold text-stone-300">Suggestions will appear here after analysis.</p>
+                </div>
+            </div>
+            <div id="nutrition-total" class="rounded-2xl bg-white/10 border border-white/10 p-4 hidden"></div>
+        </section>
+    </div>
+</div>
+{% else %}
+<div class="max-w-xl mx-auto my-12 bg-white rounded-3xl border border-[#ebdcc5] p-8 text-center space-y-6 shadow-lg">
+    <div class="w-16 h-16 bg-[#3b755f]/10 text-[#3b755f] rounded-2xl flex items-center justify-center mx-auto text-2xl">
+        <i class="fa-solid fa-kitchen-set"></i>
+    </div>
+    <div class="space-y-2">
+        <span class="text-[10px] font-black uppercase tracking-wider bg-[#3b755f]/10 text-[#3b755f] px-3 py-1 rounded-full">Plus feature</span>
+        <h2 class="text-3xl font-black tracking-tight text-[#1e2421]">Kitchen Assistant is locked.</h2>
+        <p class="text-sm font-semibold text-gray-500 max-w-sm mx-auto">
+            Upgrade to <strong class="text-[#3b755f]">Plus</strong> to turn your pantry ingredients into smart Ethiopian meal suggestions with full nutrition gap analysis.
+        </p>
+    </div>
+    <hr class="border-[#ebdcc5]/60">
+    <div class="space-y-4">
+        <a href="{{ url_for('select_plan') }}" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-xl bg-[#3b755f] hover:bg-[#2f604d] text-xs font-black text-white shadow-md hover:shadow-lg transition-all duration-200">
+            Upgrade to Plus for 199 ETB/mo
+        </a>
+        <p class="text-[10px] font-bold text-gray-400">Cancel or switch tiers anytime in your profile page.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const ingredients = [];
+
+    function renderIngredients() {
+        const container = document.getElementById('ingredients-list');
+        if (!ingredients.length) {
+            container.innerHTML = '<span class="text-xs font-bold text-stone-400 self-center">Ingredient tags appear here</span>';
+            return;
+        }
+
+        container.innerHTML = ingredients.map((ingredient, index) => `
+            <button type="button" onclick="removeIngredient(${index})" class="rounded-full bg-white border border-[#ebdcc5] px-4 py-2 text-xs font-black text-[#1e2421] transition hover:border-[#3b755f] hover:text-[#3b755f]">
+                ${ingredient} <span class="ml-1 text-stone-400">x</span>
+            </button>
+        `).join('');
+    }
+
+    function addIngredient() {
+        const input = document.getElementById('ingredient-input');
+        const value = input.value.trim().toLowerCase();
+        if (!value || ingredients.includes(value)) return;
+        ingredients.push(value);
+        input.value = '';
+        renderIngredients();
+    }
+
+    function quickAdd(value) {
+        document.getElementById('ingredient-input').value = value;
+        addIngredient();
+    }
+
+    function removeIngredient(index) {
+        ingredients.splice(index, 1);
+        renderIngredients();
+    }
+
+    function suggestionCard(food) {
+        return `<article class="rounded-2xl bg-[#faf7f2] border border-[#ebdcc5]/60 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <p class="text-sm font-black text-[#1e2421]">${food.name_english}</p>
+                    <p class="text-[11px] font-bold text-stone-400">${food.food_category}</p>
+                </div>
+                <span class="rounded-full bg-[#3b755f]/10 px-3 py-1 text-[10px] font-black text-[#3b755f]">${food.calories_per_100g} kcal</span>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-2 text-xs font-bold">
+                <div class="rounded-xl bg-white p-3">Protein<br><span class="text-[#3b755f] font-black">${food.protein_g}g</span></div>
+                <div class="rounded-xl bg-white p-3">Iron<br><span class="text-[#3b755f] font-black">${food.iron_mg}mg</span></div>
+            </div>
+        </article>`;
+    }
+
+    async function getSuggestions() {
+        if (!ingredients.length) {
+            alert('Add at least one ingredient first.');
+            return;
+        }
+
+        document.getElementById('suggestions').innerHTML = '<div class="sm:col-span-2 rounded-2xl bg-[#faf7f2] border border-[#ebdcc5] p-6 text-center text-sm font-black">Finding meals...</div>';
+
+        const response = await fetch('/api/kitchen/suggest', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ingredients})
+        });
+        const data = await response.json();
+
+        const unique = Array.from(new Map(data.suggestions.map(item => [item.id, item])).values());
+        document.getElementById('suggestions').innerHTML = unique.length
+            ? unique.map(suggestionCard).join('')
+            : '<div class="sm:col-span-2 rounded-2xl bg-[#faf7f2] border border-dashed border-[#ebdcc5] p-6 text-center"><p class="text-sm font-black">No matching meals found.</p><p class="mt-1 text-xs font-semibold text-stone-500">Try common food names like shiro, injera, misir, or gomen.</p></div>';
+
+        document.getElementById('deficiencies').innerHTML = data.deficiencies.length
+            ? data.deficiencies.map(item => `<div class="rounded-2xl bg-white/10 border border-white/10 p-4"><p class="text-sm font-black">${item.nutrient}</p><p class="mt-1 text-xs font-semibold text-stone-300">${item.message}</p></div>`).join('')
+            : '<div class="rounded-2xl bg-white/10 border border-white/10 p-4"><p class="text-sm font-black">Looks balanced.</p><p class="mt-1 text-xs font-semibold text-stone-300">Protein and iron are in a healthy range for these matches.</p></div>';
+
+        const total = document.getElementById('nutrition-total');
+        total.classList.remove('hidden');
+        total.innerHTML = `<p class="text-[10px] font-black uppercase tracking-wider text-stone-400">Matched nutrition</p>
+            <p class="mt-1 text-sm font-black">${data.total_nutrition.calories} kcal, ${data.total_nutrition.protein}g protein, ${data.total_nutrition.iron}mg iron</p>`;
+    }
+
+    document.getElementById('ingredient-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addIngredient();
+        }
+    });
+
+    renderIngredients();
+</script>
+{% endblock %}

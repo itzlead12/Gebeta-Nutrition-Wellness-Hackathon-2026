@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t('select_plan_title') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] } }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-[#faf7f2] text-[#1e2421] font-sans antialiased">
+    <header class="border-b border-black/5 bg-white/80 backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+            <a href="{{ url_for('home') }}" class="flex items-center gap-3">
+                <img src="/static/img/logo.png" alt="Gebeta Nutrition Logo" class="h-10 w-10 rounded-xl object-cover shadow-sm">
+                <div>
+                    <p class="text-sm font-black tracking-tight">Gebeta Nutrition</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#3b755f]">{{ t('home_page_title') }}</p>
+                </div>
+            </a>
+            <a href="{{ url_for('logout') }}" class="text-xs font-black uppercase tracking-wider text-stone-500 transition hover:text-[#3b755f]">
+                <i class="fa-solid fa-right-from-bracket mr-1"></i> {{ t('nav_signout') }}
+            </a>
+        </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <section class="max-w-3xl space-y-4">
+            <p class="text-xs font-black uppercase tracking-[0.3em] text-[#3b755f]">{{ t('home_hero_badge') }}</p>
+            <h1 class="text-4xl font-black tracking-tight text-[#1e2421] sm:text-5xl">{{ t('select_plan_title') }}</h1>
+            <p class="text-base leading-8 text-stone-600 sm:text-lg">{{ t('switch_plan_hint') }}</p>
+        </section>
+
+        <section class="mt-10 grid gap-5 lg:grid-cols-3">
+            <article class="flex flex-col justify-between rounded-[2rem] border border-black/5 bg-white p-6 shadow-sm">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.25em] text-stone-400">{{ t('plan_core_tag') }}</p>
+                    <div class="mt-2 flex items-center justify-between gap-3">
+                        <h2 class="text-2xl font-black">{{ t('plan_free_name') }}</h2>
+                        <span class="rounded-full bg-stone-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-stone-500">{{ t('plan_zero_price') }}</span>
+                    </div>
+                    <p class="mt-3 text-sm leading-7 text-stone-600">{{ t('plan_free_desc') }}</p>
+                    <ul class="mt-5 space-y-3 text-sm font-semibold text-stone-600">
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_free_1') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_free_2') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_free_3') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_free_4') }}</span></li>
+                    </ul>
+                </div>
+                <form method="POST" action="{{ url_for('select_plan') }}" class="mt-6">
+                    <input type="hidden" name="plan" value="free">
+                    <button type="submit" class="w-full rounded-full border border-[#3b755f] px-5 py-3 text-sm font-black text-[#3b755f] transition hover:bg-[#3b755f] hover:text-white">
+                        {{ t('plan_choose_free') }}
+                    </button>
+                </form>
+            </article>
+
+            <article class="flex flex-col justify-between rounded-[2rem] border-2 border-[#3b755f] bg-[#fbfcf8] p-6 shadow-md">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-[0.25em] text-[#3b755f]">{{ t('plan_plus_tag') }}</p>
+                        <h2 class="mt-2 text-2xl font-black">{{ t('plan_plus_name') }}</h2>
+                    </div>
+                    <span class="rounded-full bg-[#3b755f] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white">{{ t('plan_popular') }}</span>
+                </div>
+                <p class="mt-3 text-sm leading-7 text-stone-600">{{ t('plan_plus_desc') }}</p>
+                <div class="mt-4 text-4xl font-black text-[#1e2421]">199 <span class="text-sm font-bold text-stone-400">{{ t('plan_monthly') }}</span></div>
+                <ul class="mt-5 space-y-3 text-sm font-semibold text-stone-600">
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_1') }}</span></li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_2') }}</span></li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_3') }}</span></li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_4') }}</span></li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_5') }}</span></li>
+                </ul>
+                <form method="POST" action="{{ url_for('select_plan') }}" class="mt-6">
+                    <input type="hidden" name="plan" value="plus">
+                    <button type="submit" class="w-full rounded-full bg-[#3b755f] px-5 py-3 text-sm font-black text-white transition hover:bg-[#2b5948]">
+                        {{ t('plan_choose_plus') }}
+                    </button>
+                </form>
+            </article>
+
+            <article class="flex flex-col justify-between rounded-[2rem] border border-[#1e2421] bg-[#1e2421] p-6 text-white shadow-xl">
+                <div>
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <p class="text-xs font-black uppercase tracking-[0.25em] text-[#C7E86A]">{{ t('plan_premium_tag') }}</p>
+                            <h2 class="mt-2 text-2xl font-black">{{ t('plan_premium_name') }}</h2>
+                        </div>
+                        <span class="rounded-full bg-[#C7E86A] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#1e2421]">{{ t('home_plan_recommended') }}</span>
+                    </div>
+                    <p class="mt-3 text-sm leading-7 text-white/70">{{ t('plan_premium_desc') }}</p>
+                    <div class="mt-4 text-4xl font-black text-[#C7E86A]">499 <span class="text-sm font-bold text-white/60">{{ t('plan_monthly') }}</span></div>
+                    <ul class="mt-5 space-y-3 text-sm font-semibold text-white/75">
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_1') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_2') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_3') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_4') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_5') }}</span></li>
+                    </ul>
+                </div>
+                <form method="POST" action="{{ url_for('select_plan') }}" class="mt-6">
+                    <input type="hidden" name="plan" value="premium">
+                    <button type="submit" class="w-full rounded-full bg-[#C7E86A] px-5 py-3 text-sm font-black text-[#1e2421] transition hover:bg-[#b8d95b]">
+                        {{ t('plan_choose_premium') }}
+                    </button>
+                </form>
+            </article>
+        </section>
+
+        <section class="mt-10 rounded-[2rem] border border-dashed border-[#3b755f]/20 bg-white p-5 text-sm text-stone-600 shadow-sm">
+            <i class="fa-solid fa-lock mr-2 text-[#3b755f]"></i>
+            {{ t('checkout_secure_note') }}
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Achievements - Gebeta Nutrition</title>
+</head>
+<body>
+    <h1>Your Achievements</h1>
+    <div id="badges"></div>
+    
+    <script>
+        fetch('/api/achievements')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('badges').innerHTML = 
+                    data.length > 0 
+                    ? data.map(a => `<p>${a.badge_name} - Earned: ${a.earned_at}</p>`).join('')
+                    : '<p>No achievements yet. Start logging meals!</p>';
+            });
+    </script>
+</body>
+</html>

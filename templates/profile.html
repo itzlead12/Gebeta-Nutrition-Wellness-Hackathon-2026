@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Gebeta Nutrition{% endblock %}
+{% block page_title %}Profile{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-[10px] font-black text-[#3b755f] uppercase tracking-wider">Personal settings</p>
+            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Tune your nutrition profile.</h2>
+        </div>
+        <div class="rounded-2xl bg-white border border-[#ebdcc5]/70 px-4 py-3 shadow-sm">
+            <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">BMI</p>
+            <p class="text-xl font-black text-[#3b755f]">{{ bmi if bmi else 'Add height and weight' }}</p>
+        </div>
+    </div>
+
+    <form method="POST" action="/dashboard/profile" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section class="lg:col-span-2 bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-5">
+            <div>
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Body basics</p>
+                <h3 class="text-lg font-black">Age, weight, and height</h3>
+            </div>
+
+            <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Age</span>
+                    <input type="number" name="age" min="0" value="{{ user.age or '' }}" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                </label>
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Weight (kg)</span>
+                    <input type="number" name="weight_kg" step="0.1" min="0" value="{{ user.weight_kg or '' }}" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                </label>
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Height (cm)</span>
+                    <input type="number" name="height_cm" step="0.1" min="0" value="{{ user.height_cm or '' }}" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                </label>
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Gender</span>
+                    <select name="gender" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                        {% for option in ['Male', 'Female', 'Prefer not to say'] %}
+                            <option value="{{ option }}" {{ 'selected' if user.gender == option else '' }}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Activity level</span>
+                    <select name="activity_level" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                        {% for option in ['Sedentary', 'Moderate', 'Active', 'Very Active'] %}
+                            <option value="{{ option }}" {{ 'selected' if user.activity_level == option else '' }}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Language</span>
+                    <select name="preferred_language" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                        {% for option in ['English', 'Amharic', 'Afaan Oromo', 'Tigrinya'] %}
+                            <option value="{{ option }}" {{ 'selected' if user.preferred_language == option else '' }}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Dietary preference</span>
+                    <select name="dietary_preference" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                        {% for option in ['Omnivore', 'Vegetarian', 'Vegan'] %}
+                            <option value="{{ option }}" {{ 'selected' if user.dietary_preference == option else '' }}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Religious preference</span>
+                    <select name="religious_preference" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                        {% for option in ['None', 'Orthodox', 'Muslim'] %}
+                            <option value="{{ option }}" {{ 'selected' if user.religious_preference == option else '' }}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+        </section>
+
+        <aside class="bg-[#1e2421] text-white rounded-2xl p-5 shadow-sm space-y-5">
+            <div>
+                <p class="text-[10px] font-black text-[#C7E86A] uppercase tracking-wider">Budget</p>
+                <h3 class="text-lg font-black">Food spending limits</h3>
+            </div>
+            <label class="block space-y-2">
+                <span class="text-xs font-black uppercase tracking-wider text-stone-400">Daily budget (ETB)</span>
+                <input type="number" name="daily_budget_etb" min="0" value="{{ user.daily_budget_etb or '' }}" class="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-stone-400 focus:border-[#C7E86A] focus:ring-4 focus:ring-[#C7E86A]/10">
+            </label>
+            <label class="block space-y-2">
+                <span class="text-xs font-black uppercase tracking-wider text-stone-400">Weekly budget (ETB)</span>
+                <input type="number" name="weekly_budget_etb" min="0" value="{{ user.weekly_budget_etb or '' }}" class="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-stone-400 focus:border-[#C7E86A] focus:ring-4 focus:ring-[#C7E86A]/10">
+            </label>
+            <label class="block space-y-2">
+                <span class="text-xs font-black uppercase tracking-wider text-stone-400">Monthly budget (ETB)</span>
+                <input type="number" name="monthly_budget_etb" min="0" value="{{ user.monthly_budget_etb or '' }}" class="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-stone-400 focus:border-[#C7E86A] focus:ring-4 focus:ring-[#C7E86A]/10">
+            </label>
+            <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                <p class="text-[10px] font-black uppercase tracking-wider text-stone-400">Profile email</p>
+                <p class="mt-1 text-sm font-black truncate">{{ user.email }}</p>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-3 bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-5">
+            <div>
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Goals and conditions</p>
+                <h3 class="text-lg font-black">Nutrition direction</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Fitness goal</span>
+                    <select name="fitness_goal" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                        {% for option in ['Weight Loss', 'Weight Gain', 'Muscle Gain', 'Healthy Eating', 'Better Energy'] %}
+                            <option value="{{ option }}" {{ 'selected' if user.fitness_goal == option else '' }}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Health goals</span>
+                    <input type="text" name="health_goals" value="{{ user.health_goals or '' }}" placeholder="More energy, blood sugar support, balanced meals" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                </label>
+            </div>
+
+            <label class="block space-y-2">
+                <span class="text-xs font-black uppercase tracking-wider text-stone-500">Medical conditions</span>
+                <textarea name="medical_conditions" rows="3" placeholder="Diabetes, hypertension, anemia, allergies" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">{{ user.medical_conditions or '' }}</textarea>
+            </label>
+
+            <button type="submit" class="w-full rounded-xl bg-[#3b755f] px-5 py-4 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2f604d] hover:shadow-lg">
+                Save Profile
+            </button>
+        </section>
+    </form>
+
+    <!-- Subscription Plan Card -->
+    <section class="bg-[#1e2421] text-white rounded-2xl p-6 shadow-sm space-y-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-[10px] font-black text-[#C7E86A] uppercase tracking-wider">Your subscription</p>
+                <h3 class="text-xl font-black">Manage your plan.</h3>
+            </div>
+            <span class="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center text-lg">
+                {% if user.subscription_plan == 'premium' %}<i class="fa-solid fa-crown text-[#C7E86A]"></i>
+                {% elif user.subscription_plan == 'plus' %}<i class="fa-solid fa-bolt text-[#3b755f]"></i>
+                {% else %}<i class="fa-solid fa-seedling text-stone-400"></i>{% endif %}
+            </span>
+        </div>
+
+        <!-- Current plan badge -->
+        <div class="rounded-2xl bg-white/10 border border-white/10 p-4 flex items-center justify-between gap-4">
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-wider text-stone-400">Active plan</p>
+                <p class="mt-1 text-xl font-black">{{ user.subscription_plan|title }}</p>
+                <p class="text-xs font-bold text-stone-400 mt-0.5">
+                    {% if user.subscription_plan == 'free' %}0 ETB / month · Core features only
+                    {% elif user.subscription_plan == 'plus' %}199 ETB / month · Fasting, Kitchen & Budget
+                    {% else %}499 ETB / month · Full access including AI & Family{% endif %}
+                </p>
+            </div>
+            <span class="rounded-full px-4 py-2 text-[10px] font-black
+                {% if user.subscription_plan == 'premium' %}bg-[#C7E86A] text-[#1e2421]
+                {% elif user.subscription_plan == 'plus' %}bg-[#3b755f] text-white
+                {% else %}bg-stone-600 text-white{% endif %}">
+                {{ user.subscription_plan|title }}
+            </span>
+        </div>
+
+        <!-- Plan selector -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <form method="POST" action="/select-plan">
+                <input type="hidden" name="plan" value="free">
+                <button type="submit" class="w-full rounded-2xl border-2 p-4 text-left transition-all duration-200 hover:-translate-y-1
+                    {% if user.subscription_plan == 'free' %}border-[#3b755f] bg-[#3b755f]/20{% else %}border-white/10 bg-white/5 hover:border-white/30{% endif %}">
+                    <p class="text-[10px] font-black uppercase tracking-wider text-stone-400">Tier 1</p>
+                    <p class="text-lg font-black mt-1">Free</p>
+                    <p class="text-xs font-bold text-stone-400 mt-1">0 ETB · Dashboard & Food</p>
+                    {% if user.subscription_plan == 'free' %}<p class="text-[10px] font-black text-[#C7E86A] mt-2">✓ Current plan</p>{% endif %}
+                </button>
+            </form>
+            <form method="POST" action="/select-plan">
+                <input type="hidden" name="plan" value="plus">
+                <button type="submit" class="w-full rounded-2xl border-2 p-4 text-left transition-all duration-200 hover:-translate-y-1
+                    {% if user.subscription_plan == 'plus' %}border-[#3b755f] bg-[#3b755f]/20{% else %}border-white/10 bg-white/5 hover:border-white/30{% endif %}">
+                    <p class="text-[10px] font-black uppercase tracking-wider text-stone-400">Tier 2</p>
+                    <p class="text-lg font-black mt-1">Plus</p>
+                    <p class="text-xs font-bold text-stone-400 mt-1">199 ETB · + Fasting, Kitchen, Budget</p>
+                    {% if user.subscription_plan == 'plus' %}<p class="text-[10px] font-black text-[#C7E86A] mt-2">✓ Current plan</p>{% endif %}
+                </button>
+            </form>
+            <form method="POST" action="/select-plan">
+                <input type="hidden" name="plan" value="premium">
+                <button type="submit" class="w-full rounded-2xl border-2 p-4 text-left transition-all duration-200 hover:-translate-y-1
+                    {% if user.subscription_plan == 'premium' %}border-[#C7E86A] bg-[#C7E86A]/10{% else %}border-white/10 bg-white/5 hover:border-white/30{% endif %}">
+                    <p class="text-[10px] font-black uppercase tracking-wider text-stone-400">Tier 3</p>
+                    <p class="text-lg font-black mt-1 text-[#C7E86A]">Premium</p>
+                    <p class="text-xs font-bold text-stone-400 mt-1">499 ETB · + AI & Family Hub</p>
+                    {% if user.subscription_plan == 'premium' %}<p class="text-[10px] font-black text-[#C7E86A] mt-2">✓ Current plan</p>{% endif %}
+                </button>
+            </form>
+        </div>
+        <p class="text-[10px] font-bold text-stone-500 text-center">Click a plan to switch immediately. Changes take effect right away.</p>
+    </section>
+</div>
+{% endblock %}

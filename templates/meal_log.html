@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Log Meal - Gebeta Nutrition</title>
+</head>
+<body>
+    <h1>Log Your Meal</h1>
+    
+    <form id="meal-form">
+        <label>Food: 
+            <select id="food_id">
+                <option value="">Select food...</option>
+            </select>
+        </label>
+        <label>Serving Size (g): <input type="number" id="serving" value="150"></label>
+        <label>Meal Type:
+            <select id="meal_type">
+                <option>breakfast</option>
+                <option>lunch</option>
+                <option>dinner</option>
+                <option>snack</option>
+                <option>suhoor</option>
+                <option>iftar</option>
+            </select>
+        </label>
+        <label>Family Member:
+            <select id="family_member">
+                <option value="">Just me</option>
+            </select>
+        </label>
+        <button type="submit">Log Meal</button>
+    </form>
+    
+    <div id="recent-meals">
+        <h2>Today's Meals</h2>
+    </div>
+    
+    <script>
+        fetch('/api/foods/search?q=')
+            .then(r => r.json())
+            .then(foods => {
+                document.getElementById('food_id').innerHTML += 
+                    foods.map(f => `<option value="${f.id}">${f.name_english} (${f.name_amharic})</option>`).join('');
+            });
+        
+        document.getElementById('meal-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('/api/meals/log', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    food_id: document.getElementById('food_id').value,
+                    serving_size_g: document.getElementById('serving').value,
+                    meal_type: document.getElementById('meal_type').value,
+                    family_member_id: document.getElementById('family_member').value || null
+                })
+            })
+            .then(r => r.json())
+            .then(d => alert('Meal logged! ' + d.calories + ' kcal'));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Progress Reports - Gebeta Nutrition</title>
+</head>
+<body>
+    <h1>Progress Reports</h1>
+    
+    <div>
+        <label>Report Type:
+            <select id="report-type">
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+            </select>
+        </label>
+        <button onclick="generateReport()">Generate Report</button>
+    </div>
+    
+    <div id="report-content">
+        <h2>Nutrition Summary</h2>
+        <div id="nutrition-summary"></div>
+        
+        <h2>Weight Trends</h2>
+        <div id="weight-trends"></div>
+        
+        <h2>Deficiencies Detected</h2>
+        <div id="deficiencies"></div>
+        
+        <h2>Recommendations</h2>
+        <div id="recommendations"></div>
+        
+        <h2>Achievements Earned</h2>
+        <div id="report-achievements"></div>
+    </div>
+    
+    <script>
+        function generateReport() {
+            const type = document.getElementById('report-type').value;
+            fetch('/api/reports/generate?type=' + type)
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('nutrition-summary').innerHTML = 
+                        `<p>Avg Daily Calories: ${data.avg_calories}</p>
+                         <p>Avg Protein: ${data.avg_protein}g</p>
+                         <p>Avg Water: ${data.avg_water}ml</p>`;
+                    
+                    document.getElementById('weight-trends').innerHTML = 
+                        `<p>Starting: ${data.start_weight}kg</p>
+                         <p>Current: ${data.current_weight}kg</p>
+                         <p>Change: ${data.weight_change}kg</p>`;
+                    
+                    document.getElementById('deficiencies').innerHTML = 
+                        data.deficiencies.map(d => `<p>${d}</p>`).join('');
+                    
+                    document.getElementById('recommendations').innerHTML = 
+                        data.recommendations.map(r => `<p>${r}</p>`).join('');
+                    
+                    document.getElementById('report-achievements').innerHTML = 
+                        data.achievements.map(a => `<p>${a.badge_name}</p>`).join('');
+                });
+        }
+    </script>
+</body>
+</html>

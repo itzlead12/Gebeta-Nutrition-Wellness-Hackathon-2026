@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}AI Assistant - Gebeta Nutrition{% endblock %}
+{% block page_title %}AI Assistant{% endblock %}
+
+{% block content %}
+{% if current_user_plan == 'premium' %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-[10px] font-black text-[#3b755f] uppercase tracking-wider">Nutrition coach</p>
+            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Ask about meals, goals, and fasting.</h2>
+        </div>
+        <a href="{{ url_for('kitchen_assistant') }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-[#ebdcc5] bg-white px-4 py-3 text-xs font-black text-[#1e2421] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3b755f] hover:text-[#3b755f]">
+            <i class="fa-solid fa-kitchen-set"></i> Kitchen
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+        <section class="bg-white rounded-2xl border border-[#ebdcc5]/70 shadow-sm overflow-hidden">
+            <div id="messages" class="min-h-[420px] max-h-[560px] overflow-y-auto p-5 space-y-3 bg-[#faf7f2]">
+                <div class="max-w-[86%] rounded-2xl bg-white border border-[#ebdcc5]/70 p-4 shadow-sm">
+                    <p class="text-[10px] font-black uppercase tracking-wider text-[#3b755f]">Gebeta AI</p>
+                    <p class="mt-1 text-sm font-semibold text-stone-700">I can help with balanced Ethiopian meals, diabetes-friendly foods, fasting nutrition, and budget-aware choices.</p>
+                </div>
+            </div>
+
+            <form id="chat-form" class="border-t border-[#ebdcc5]/70 bg-white p-4 flex flex-col sm:flex-row gap-3">
+                <input type="text" id="question" placeholder="Ask about Ethiopian nutrition..." class="flex-1 rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                <button type="submit" class="rounded-xl bg-[#3b755f] px-5 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2f604d] hover:shadow-lg">
+                    Ask
+                </button>
+            </form>
+        </section>
+
+        <aside class="bg-[#1e2421] text-white rounded-2xl p-5 shadow-sm space-y-4">
+            <div>
+                <p class="text-[10px] font-black text-[#C7E86A] uppercase tracking-wider">Suggested questions</p>
+                <h3 class="text-lg font-black">Quick prompts</h3>
+            </div>
+            <div class="space-y-2">
+                <button onclick="askQuestion('What foods are good for diabetes?')" class="w-full text-left rounded-xl bg-white/10 border border-white/10 px-4 py-3 text-xs font-bold text-stone-200 transition hover:bg-white/15 hover:text-white">Diabetes-friendly foods</button>
+                <button onclick="askQuestion('How can I gain weight?')" class="w-full text-left rounded-xl bg-white/10 border border-white/10 px-4 py-3 text-xs font-bold text-stone-200 transition hover:bg-white/15 hover:text-white">Weight gain tips</button>
+                <button onclick="askQuestion('What should I eat during fasting?')" class="w-full text-left rounded-xl bg-white/10 border border-white/10 px-4 py-3 text-xs font-bold text-stone-200 transition hover:bg-white/15 hover:text-white">Fasting nutrition</button>
+                <button onclick="askQuestion('Is my meal balanced?')" class="w-full text-left rounded-xl bg-white/10 border border-white/10 px-4 py-3 text-xs font-bold text-stone-200 transition hover:bg-white/15 hover:text-white">Meal balance check</button>
+                <button onclick="askQuestion('How do I eat well on a small budget?')" class="w-full text-left rounded-xl bg-white/10 border border-white/10 px-4 py-3 text-xs font-bold text-stone-200 transition hover:bg-white/15 hover:text-white">Budget-friendly options</button>
+            </div>
+        </aside>
+    </div>
+</div>
+{% else %}
+<div class="max-w-xl mx-auto my-12 bg-[#1e2421] text-white rounded-3xl border border-white/10 p-8 text-center space-y-6 shadow-xl">
+    <div class="w-16 h-16 bg-[#C7E86A]/20 text-[#C7E86A] rounded-2xl flex items-center justify-center mx-auto text-2xl">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+    </div>
+    <div class="space-y-2">
+        <span class="text-[10px] font-black uppercase tracking-wider bg-[#C7E86A]/20 text-[#C7E86A] px-3 py-1 rounded-full">Premium feature</span>
+        <h2 class="text-3xl font-black tracking-tight">AI Assistant is locked.</h2>
+        <p class="text-sm font-semibold text-stone-400 max-w-sm mx-auto">
+            Upgrade to <strong class="text-[#C7E86A]">Premium</strong> to unlock the Gebeta AI — your 24/7 nutritional advisor for Ethiopian food, fasting, diabetes, weight, and budget questions.
+        </p>
+    </div>
+    <hr class="border-white/10">
+    <div class="space-y-4">
+        <a href="{{ url_for('select_plan') }}" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-xl bg-[#C7E86A] hover:bg-[#b5d656] text-xs font-black text-[#1e2421] shadow-md hover:shadow-lg transition-all duration-200">
+            Upgrade to Premium for 499 ETB/mo
+        </a>
+        <p class="text-[10px] font-bold text-stone-500">Cancel or switch tiers anytime in your profile page.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const messages = document.getElementById('messages');
+
+    function addMessage(author, text, isUser = false) {
+        const wrapper = document.createElement('div');
+        wrapper.className = `max-w-[86%] rounded-2xl p-4 shadow-sm ${isUser ? 'ml-auto bg-[#3b755f] text-white' : 'bg-white border border-[#ebdcc5]/70 text-[#1e2421]'}`;
+        wrapper.innerHTML = `<p class="text-[10px] font-black uppercase tracking-wider ${isUser ? 'text-[#C7E86A]' : 'text-[#3b755f]'}">${author}</p><p class="mt-1 text-sm font-semibold">${text}</p>`;
+        messages.appendChild(wrapper);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function askQuestion(question) {
+        document.getElementById('question').value = question;
+        document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+    }
+
+    document.getElementById('chat-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const input = document.getElementById('question');
+        const question = input.value.trim();
+        if (!question) return;
+
+        addMessage('You', question, true);
+        input.value = '';
+
+        try {
+            const response = await fetch('/api/ai/ask', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({question})
+            });
+            const data = await response.json();
+            addMessage('Gebeta AI', data.response || 'I could not generate a response.');
+        } catch (error) {
+            addMessage('Gebeta AI', 'Something went wrong. Please try again.');
+        }
+    });
+</script>
+{% endblock %}

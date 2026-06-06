@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t('home_page_title') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        gebetaGreen: '#3b755f',
+                        gebetaLime: '#c7e86a',
+                        gebetaCream: '#faf7f2',
+                        gebetaDark: '#1e2421'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(59, 117, 95, 0.08), transparent 28%),
+                radial-gradient(circle at right 20%, rgba(199, 232, 106, 0.15), transparent 28%),
+                linear-gradient(180deg, #fcfbf8 0%, #f7f2ea 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-[#1e2421] font-sans antialiased overflow-x-hidden">
+    <header class="sticky top-0 z-40 border-b border-black/5 bg-white/80 backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+            <a href="#top" class="flex items-center gap-3">
+                <img src="/static/img/logo.png" alt="Gebeta Nutrition Logo" class="h-10 w-10 rounded-xl object-cover shadow-sm">
+                <div class="min-w-0">
+                    <p class="text-sm font-black tracking-tight">Gebeta Nutrition</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-[#3b755f]">{{ t('wellness_core') }}</p>
+                </div>
+            </a>
+
+            <nav class="hidden items-center gap-6 text-sm font-bold text-stone-600 md:flex">
+                <a href="#features" class="transition hover:text-[#3b755f]">{{ t('home_features_heading') }}</a>
+                <a href="#plans" class="transition hover:text-[#3b755f]">{{ t('home_plans_heading') }}</a>
+                <a href="#how" class="transition hover:text-[#3b755f]">{{ t('home_how_heading') }}</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <div class="hidden rounded-full border border-black/10 bg-white p-1 text-[10px] font-black uppercase tracking-widest sm:flex">
+                    <a href="{{ url_for('set_language', lang='english') }}" class="rounded-full px-3 py-1 {{ 'bg-[#3b755f] text-white' if current_lang == 'english' else 'text-stone-500' }}">EN</a>
+                    <a href="{{ url_for('set_language', lang='amharic') }}" class="rounded-full px-3 py-1 {{ 'bg-[#3b755f] text-white' if current_lang == 'amharic' else 'text-stone-500' }}">አማ</a>
+                    <a href="{{ url_for('set_language', lang='oromo') }}" class="rounded-full px-3 py-1 {{ 'bg-[#3b755f] text-white' if current_lang == 'oromo' else 'text-stone-500' }}">ORM</a>
+                </div>
+                <a href="{{ url_for('login') }}" class="rounded-full border border-black/10 px-4 py-2 text-sm font-bold text-stone-700 transition hover:border-[#3b755f] hover:text-[#3b755f]">
+                    {{ t('home_nav_sign_in') }}
+                </a>
+                <a href="{{ url_for('register') }}" class="hidden rounded-full bg-[#3b755f] px-4 py-2 text-sm font-black text-white shadow-sm transition hover:bg-[#2b5948] sm:inline-flex">
+                    {{ t('home_nav_get_started') }}
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main id="top">
+        <section class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-20">
+            <div class="space-y-7">
+                <div class="inline-flex items-center gap-2 rounded-full border border-[#3b755f]/15 bg-[#3b755f]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.25em] text-[#2b5948]">
+                    <i class="fa-solid fa-sparkles"></i>
+                    {{ t('home_hero_badge') }}
+                </div>
+                <div class="space-y-4">
+                    <h1 class="max-w-3xl text-4xl font-black tracking-tight text-[#1e2421] sm:text-5xl lg:text-6xl">
+                        {{ t('home_hero_title_line1') }}
+                        <span class="block text-[#3b755f]">{{ t('home_hero_title_line2') }}</span>
+                    </h1>
+                    <p class="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
+                        {{ t('home_hero_copy') }}
+                    </p>
+                </div>
+
+                <div class="flex flex-col gap-3 sm:flex-row">
+                    <a href="#plans" class="inline-flex items-center justify-center gap-2 rounded-full bg-[#C7E86A] px-6 py-3.5 text-sm font-black text-[#1e2421] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#b8d95b]">
+                        {{ t('home_hero_primary_cta') }} <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <a href="{{ url_for('login') }}" class="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3.5 text-sm font-black text-[#1e2421] transition hover:border-[#3b755f] hover:text-[#3b755f]">
+                        {{ t('home_hero_secondary_cta') }}
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div class="rounded-3xl border border-black/5 bg-white/80 p-4 shadow-sm">
+                        <p class="text-3xl font-black text-[#3b755f]">120+</p>
+                        <p class="mt-1 text-xs font-bold uppercase tracking-wider text-stone-500">{{ t('home_hero_stat_users') }}</p>
+                    </div>
+                    <div class="rounded-3xl border border-black/5 bg-white/80 p-4 shadow-sm">
+                        <p class="text-3xl font-black text-[#3b755f]">20+</p>
+                        <p class="mt-1 text-xs font-bold uppercase tracking-wider text-stone-500">{{ t('home_hero_stat_foods') }}</p>
+                    </div>
+                    <div class="rounded-3xl border border-black/5 bg-white/80 p-4 shadow-sm">
+                        <p class="text-3xl font-black text-[#3b755f]">3</p>
+                        <p class="mt-1 text-xs font-bold uppercase tracking-wider text-stone-500">{{ t('home_hero_stat_plans') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                <div class="absolute -left-8 top-8 h-24 w-24 rounded-full bg-[#C7E86A]/30 blur-2xl"></div>
+                <div class="absolute -right-6 bottom-10 h-28 w-28 rounded-full bg-[#3b755f]/20 blur-2xl"></div>
+                <div class="relative overflow-hidden rounded-[2rem] border border-white/70 bg-[#1e2421] p-5 text-white shadow-2xl sm:p-6">
+                    <div class="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#C7E86A]">{{ t('home_preview_title') }}</p>
+                            <h2 class="mt-1 text-xl font-black">{{ t('home_preview_subtitle') }}</h2>
+                        </div>
+                        <span class="rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white/80">{{ t('home_mobile_ready') }}</span>
+                    </div>
+
+                    <div class="mt-5 space-y-4">
+                        <div class="rounded-3xl bg-white p-4 text-[#1e2421] shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#3b755f]">{{ t('plan_premium_name') }}</p>
+                                    <p class="text-sm font-bold">{{ t('home_plan_recommended') }}</p>
+                                </div>
+                                <span class="rounded-full bg-[#C7E86A] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#1e2421]">{{ t('home_best_value') }}</span>
+                            </div>
+                            <div class="mt-4 grid grid-cols-3 gap-3 text-center">
+                                <div class="rounded-2xl bg-[#faf7f2] p-3">
+                                    <p class="text-xs font-bold text-stone-500">{{ t('plan_plus_tag') }}</p>
+                                    <p class="mt-1 text-lg font-black text-[#3b755f]">✅</p>
+                                </div>
+                                <div class="rounded-2xl bg-[#faf7f2] p-3">
+                                    <p class="text-xs font-bold text-stone-500">{{ t('home_features_heading') }}</p>
+                                    <p class="mt-1 text-lg font-black text-[#3b755f]">AI</p>
+                                </div>
+                                <div class="rounded-2xl bg-[#faf7f2] p-3">
+                                    <p class="text-xs font-bold text-stone-500">{{ t('home_footer_support') }}</p>
+                                    <p class="mt-1 text-lg font-black text-[#3b755f]">24/7</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                                <p class="text-[10px] font-black uppercase tracking-[0.25em] text-white/60">{{ t('home_today_label') }}</p>
+                                <p class="mt-2 text-lg font-black">{{ t('home_feature_1_title') }}</p>
+                                <p class="mt-2 text-sm text-white/70">{{ t('home_feature_1_body') }}</p>
+                            </div>
+                            <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                                <p class="text-[10px] font-black uppercase tracking-[0.25em] text-white/60">{{ t('home_budget_label') }}</p>
+                                <p class="mt-2 text-lg font-black">{{ t('home_feature_2_title') }}</p>
+                                <p class="mt-2 text-sm text-white/70">{{ t('home_feature_2_body') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div class="mb-8 max-w-2xl">
+                <p class="text-xs font-black uppercase tracking-[0.3em] text-[#3b755f]">{{ t('home_features_heading') }}</p>
+                <h2 class="mt-2 text-3xl font-black text-[#1e2421] sm:text-4xl">{{ t('home_features_subtitle') }}</h2>
+            </div>
+            <div class="grid gap-5 md:grid-cols-3">
+                <article class="rounded-[1.75rem] border border-black/5 bg-white p-6 shadow-sm">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#3b755f] text-white">
+                        <i class="fa-solid fa-moon"></i>
+                    </div>
+                    <h3 class="mt-4 text-xl font-black">{{ t('home_feature_1_title') }}</h3>
+                    <p class="mt-3 text-sm leading-7 text-stone-600">{{ t('home_feature_1_body') }}</p>
+                </article>
+                <article class="rounded-[1.75rem] border border-black/5 bg-white p-6 shadow-sm">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#C7E86A] text-[#1e2421]">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <h3 class="mt-4 text-xl font-black">{{ t('home_feature_2_title') }}</h3>
+                    <p class="mt-3 text-sm leading-7 text-stone-600">{{ t('home_feature_2_body') }}</p>
+                </article>
+                <article class="rounded-[1.75rem] border border-black/5 bg-white p-6 shadow-sm">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1e2421] text-[#C7E86A]">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="mt-4 text-xl font-black">{{ t('home_feature_3_title') }}</h3>
+                    <p class="mt-3 text-sm leading-7 text-stone-600">{{ t('home_feature_3_body') }}</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="plans" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.3em] text-[#3b755f]">{{ t('home_plans_heading') }}</p>
+                    <h2 class="mt-2 text-3xl font-black text-[#1e2421] sm:text-4xl">{{ t('home_plans_subtitle') }}</h2>
+                </div>
+                <a href="{{ url_for('select_plan') }}" class="inline-flex items-center gap-2 self-start rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-black text-[#1e2421] transition hover:border-[#3b755f] hover:text-[#3b755f]">
+                    {{ t('home_plan_compare') }} <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="grid gap-5 lg:grid-cols-3">
+                <article class="flex flex-col justify-between rounded-[2rem] border border-black/5 bg-white p-6 shadow-sm">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-black uppercase tracking-[0.25em] text-stone-400">{{ t('plan_core_tag') }}</p>
+                                <h3 class="mt-2 text-2xl font-black">{{ t('plan_free_name') }}</h3>
+                            </div>
+                            <span class="rounded-full bg-stone-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-stone-500">{{ t('plan_monthly') }}</span>
+                        </div>
+                        <p class="mt-3 text-sm leading-7 text-stone-600">{{ t('plan_free_desc') }}</p>
+                        <div class="mt-5 text-3xl font-black">0 <span class="text-sm font-bold text-stone-400">{{ t('plan_monthly') }}</span></div>
+                        <ul class="mt-5 space-y-3 text-sm font-semibold text-stone-600">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_free_1') }}</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_free_2') }}</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_free_3') }}</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_free_4') }}</span></li>
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('select_plan') }}" class="mt-6 inline-flex items-center justify-center rounded-full border border-[#3b755f] px-5 py-3 text-sm font-black text-[#3b755f] transition hover:bg-[#3b755f] hover:text-white">
+                        {{ t('plan_choose_free') }}
+                    </a>
+                </article>
+
+                <article class="flex flex-col justify-between rounded-[2rem] border-2 border-[#3b755f] bg-[#fbfcf8] p-6 shadow-md">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-black uppercase tracking-[0.25em] text-[#3b755f]">{{ t('plan_plus_tag') }}</p>
+                            <h3 class="mt-2 text-2xl font-black">{{ t('plan_plus_name') }}</h3>
+                        </div>
+                        <span class="rounded-full bg-[#3b755f] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white">{{ t('home_plan_recommended') }}</span>
+                    </div>
+                    <p class="mt-3 text-sm leading-7 text-stone-600">{{ t('plan_plus_desc') }}</p>
+                    <div class="mt-5 text-3xl font-black text-[#1e2421]">199 <span class="text-sm font-bold text-stone-400">{{ t('plan_monthly') }}</span></div>
+                    <ul class="mt-5 space-y-3 text-sm font-semibold text-stone-600">
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_1') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_2') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_3') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_4') }}</span></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#3b755f]"></i><span>{{ t('plan_feature_plus_5') }}</span></li>
+                    </ul>
+                    <a href="{{ url_for('select_plan') }}" class="mt-6 inline-flex items-center justify-center rounded-full bg-[#3b755f] px-5 py-3 text-sm font-black text-white transition hover:bg-[#2b5948]">
+                        {{ t('plan_choose_plus') }}
+                    </a>
+                </article>
+
+                <article class="flex flex-col justify-between rounded-[2rem] border border-[#1e2421] bg-[#1e2421] p-6 text-white shadow-xl">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-black uppercase tracking-[0.25em] text-[#C7E86A]">{{ t('plan_premium_tag') }}</p>
+                                <h3 class="mt-2 text-2xl font-black">{{ t('plan_premium_name') }}</h3>
+                            </div>
+                            <span class="rounded-full bg-[#C7E86A] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#1e2421]">{{ t('home_plan_recommended') }}</span>
+                        </div>
+                        <p class="mt-3 text-sm leading-7 text-white/70">{{ t('plan_premium_desc') }}</p>
+                        <div class="mt-5 text-3xl font-black text-[#C7E86A]">499 <span class="text-sm font-bold text-white/60">{{ t('plan_monthly') }}</span></div>
+                        <ul class="mt-5 space-y-3 text-sm font-semibold text-white/75">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_1') }}</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_2') }}</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_3') }}</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_4') }}</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check mt-1 text-[#C7E86A]"></i><span>{{ t('plan_feature_premium_5') }}</span></li>
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('select_plan') }}" class="mt-6 inline-flex items-center justify-center rounded-full bg-[#C7E86A] px-5 py-3 text-sm font-black text-[#1e2421] transition hover:bg-[#b8d95b]">
+                        {{ t('plan_choose_premium') }}
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <section id="how" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div class="rounded-[2rem] border border-black/5 bg-white p-6 shadow-sm sm:p-8">
+                <div class="max-w-2xl">
+                    <p class="text-xs font-black uppercase tracking-[0.3em] text-[#3b755f]">{{ t('home_how_heading') }}</p>
+                    <h2 class="mt-2 text-3xl font-black text-[#1e2421] sm:text-4xl">{{ t('home_how_subtitle') }}</h2>
+                </div>
+                <div class="mt-8 grid gap-5 md:grid-cols-3">
+                    <div class="rounded-3xl bg-[#faf7f2] p-5">
+                        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#3b755f] text-white">1</div>
+                        <h3 class="mt-4 text-lg font-black">{{ t('home_step_1_title') }}</h3>
+                        <p class="mt-2 text-sm leading-7 text-stone-600">{{ t('home_step_1_body') }}</p>
+                    </div>
+                    <div class="rounded-3xl bg-[#faf7f2] p-5">
+                        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#C7E86A] text-[#1e2421]">2</div>
+                        <h3 class="mt-4 text-lg font-black">{{ t('home_step_2_title') }}</h3>
+                        <p class="mt-2 text-sm leading-7 text-stone-600">{{ t('home_step_2_body') }}</p>
+                    </div>
+                    <div class="rounded-3xl bg-[#faf7f2] p-5">
+                        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1e2421] text-white">3</div>
+                        <h3 class="mt-4 text-lg font-black">{{ t('home_step_3_title') }}</h3>
+                        <p class="mt-2 text-sm leading-7 text-stone-600">{{ t('home_step_3_body') }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div class="mb-8 max-w-2xl">
+                <p class="text-xs font-black uppercase tracking-[0.3em] text-[#3b755f]">{{ t('home_team_heading') }}</p>
+                <h2 class="mt-2 text-3xl font-black text-[#1e2421] sm:text-4xl">{{ t('home_team_subtitle') }}</h2>
+            </div>
+            <div class="grid gap-5 md:grid-cols-2">
+                <article class="overflow-hidden rounded-[2rem] border border-black/5 bg-white shadow-sm">
+                    <div class="aspect-square overflow-hidden bg-gradient-to-br from-[#3b755f] via-[#2c5d4a] to-[#1e2421]">
+                        <img src="/static/img/paul.jpg" alt="Paulos Berihun" class="h-full w-full object-cover object-center">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <h3 class="text-2xl font-black text-[#1e2421]">Paulos Berihun</h3>
+                                <p class="mt-1 text-sm font-bold text-[#3b755f]">{{ t('home_team_backend') }}</p>
+                            </div>
+                            <span class="rounded-full bg-[#3b755f]/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#3b755f]">Core</span>
+                        </div>
+                        <p class="mt-4 text-sm leading-7 text-stone-600">Builds the application logic, data flow, and the subscription and payment experience behind Gebeta.</p>
+                    </div>
+                </article>
+
+                <article class="overflow-hidden rounded-[2rem] border border-black/5 bg-white shadow-sm">
+                    <div class="aspect-square overflow-hidden bg-gradient-to-br from-[#1e2421] via-[#2f3430] to-[#3b755f]">
+                        <img src="/static/img/john.jpg" alt="Yohannes Samuel" class="h-full w-full object-cover object-center">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <h3 class="text-2xl font-black text-[#1e2421]">Yohannes Samuel</h3>
+                                <p class="mt-1 text-sm font-bold text-[#3b755f]">{{ t('home_team_ml') }}</p>
+                            </div>
+                            <span class="rounded-full bg-[#C7E86A] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#1e2421]">AI</span>
+                        </div>
+                        <p class="mt-4 text-sm leading-7 text-stone-600">Focuses on nutrition intelligence, recommendation logic, and the experience that makes the app feel smart.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div class="rounded-[2rem] bg-[#1e2421] px-6 py-10 text-white sm:px-8">
+                <div class="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-[0.3em] text-[#C7E86A]">{{ t('home_footer_mission') }}</p>
+                        <h2 class="mt-2 text-3xl font-black sm:text-4xl">{{ t('home_footer_copy') }}</h2>
+                    </div>
+                    <div class="flex flex-col gap-3 sm:flex-row">
+                        <a href="{{ url_for('register') }}" class="inline-flex items-center justify-center rounded-full bg-[#C7E86A] px-6 py-3 text-sm font-black text-[#1e2421] transition hover:bg-[#b8d95b]">{{ t('home_footer_register') }}</a>
+                        <a href="{{ url_for('select_plan') }}" class="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-black text-white transition hover:bg-white/10">{{ t('home_footer_choose_plan') }}</a>
+                    </div>
+                </div>
+                <div class="mt-8 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/70 sm:flex-row sm:items-center sm:justify-between">
+                    <p>&copy; 2026 Gebeta Nutrition System</p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="{{ url_for('login') }}" class="transition hover:text-white">{{ t('home_footer_login') }}</a>
+                        <a href="#features" class="transition hover:text-white">{{ t('home_features_heading') }}</a>
+                        <a href="#plans" class="transition hover:text-white">{{ t('home_footer_support') }}</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

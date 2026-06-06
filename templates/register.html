@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Gebeta Nutrition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] } } } }
+    </script>
+</head>
+<body class="min-h-screen bg-[#faf7f2] text-[#1e2421] font-sans antialiased">
+    <main class="min-h-screen grid lg:grid-cols-[0.95fr_1.05fr]">
+        <section class="flex items-center justify-center px-4 py-10">
+            <div class="w-full max-w-md space-y-7">
+                <div class="text-center space-y-3">
+                    <a href="/" class="inline-flex items-center justify-center">
+                        <img src="/static/img/logo.png" alt="Gebeta Nutrition Logo" class="h-12 w-auto" style="border-radius: 10px;">
+                    </a>
+                    <div>
+                        <p class="text-[10px] font-black text-[#3b755f] uppercase tracking-wider">{{ t('start_plan') }}</p>
+                        <h1 class="text-3xl font-black tracking-tight">{{ t('create_account_title') }}</h1>
+                    </div>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="space-y-2">
+                            {% for category, message in messages %}
+                                <div class="rounded-2xl border px-4 py-3 text-xs font-bold bg-white border-[#ebdcc5] text-[#1e2421]">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <div class="space-y-4">
+                    <a href="/auth/google" class="w-full flex items-center justify-center gap-3 rounded-xl border border-[#ebdcc5] bg-white px-4 py-3.5 text-sm font-black text-[#1e2421] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        <span>{{ t('sign_up_google') }}</span>
+                    </a>
+
+                    <div class="relative flex items-center justify-center">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-[#ebdcc5]/60"></div>
+                        </div>
+                        <span class="relative bg-[#faf7f2] px-3 text-[10px] font-black uppercase tracking-wider text-stone-400">{{ t('or_register_email') }}</span>
+                    </div>
+                </div>
+
+                <form method="POST" action="/register" class="bg-white rounded-2xl border border-[#ebdcc5]/70 shadow-sm p-5 sm:p-6 space-y-4">
+                    <label class="block space-y-2">
+                        <span class="text-xs font-black uppercase tracking-wider text-stone-500">{{ t('full_name') }}</span>
+                        <input type="text" name="full_name" placeholder="Your name" required class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                    </label>
+                    <label class="block space-y-2">
+                        <span class="text-xs font-black uppercase tracking-wider text-stone-500">{{ t('email') }}</span>
+                        <input type="email" name="email" placeholder="you@example.com" required class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                    </label>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <label class="block space-y-2">
+                            <span class="text-xs font-black uppercase tracking-wider text-stone-500">{{ t('password') }}</span>
+                            <input type="password" name="password" placeholder="6+ characters" required class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                        </label>
+                        <label class="block space-y-2">
+                            <span class="text-xs font-black uppercase tracking-wider text-stone-500">{{ t('confirm_password') }}</span>
+                            <input type="password" name="confirm_password" placeholder="Repeat password" required class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                        </label>
+                    </div>
+                    <button type="submit" class="w-full rounded-xl bg-[#3b755f] px-4 py-3 text-sm font-black text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2f604d] hover:shadow-lg">
+                        {{ t('register_btn') }}
+                    </button>
+                </form>
+
+                <p class="text-center text-sm font-semibold text-stone-600">
+                    {{ t('already_account') }}
+                    <a href="/login" class="font-black text-[#3b755f] hover:text-[#1e2421] transition-colors">{{ t('login_link') }}</a>
+                </p>
+            </div>
+        </section>
+
+        <section class="hidden lg:flex bg-[#1e2421] text-white p-10 flex-col justify-between">
+            <a href="/" class="flex items-center gap-3">
+                <img src="/static/img/logo.png" alt="Gebeta Nutrition Logo" class="h-10 w-auto" style="border-radius: 10px;">
+                <span class="text-sm font-black">Gebeta Nutrition</span>
+            </a>
+            <div class="max-w-xl space-y-6">
+                <p class="text-xs font-black text-[#C7E86A] uppercase tracking-wider">Personalized nutrition</p>
+                <h2 class="text-5xl font-black leading-tight">Track meals, budget smarter, and plan around fasting days.</h2>
+                <div class="rounded-2xl bg-white/10 border border-white/10 p-5">
+                    <p class="text-sm font-bold text-stone-200">Built around familiar foods like injera, shiro, misir wot, gomen, and kinche.</p>
+                </div>
+            </div>
+            <p class="text-xs text-stone-400">Simple tools for family wellness.</p>
+        </section>
+    </main>
+</body>
+</html>

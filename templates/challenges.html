@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wellness Challenges - Gebeta Nutrition</title>
+</head>
+<body>
+    <h1>Wellness Challenges</h1>
+    <p>Join challenges, earn badges, stay motivated!</p>
+    
+    <h2>Active Challenges</h2>
+    <div id="active-challenges">
+        {% for challenge in challenges %}
+        <div>
+            <h3>{{ challenge.challenge_name }}</h3>
+            <p>{{ challenge.description }}</p>
+            <p>Target: {{ challenge.target_value }} {{ challenge.target_unit }}</p>
+            <p>Period: {{ challenge.start_date }} to {{ challenge.end_date }}</p>
+            <p>Reward: {{ challenge.reward_badge }} Badge</p>
+            <button onclick="joinChallenge({{ challenge.id }})">Join Challenge</button>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <h2>Challenge Types</h2>
+    <ul>
+        <li>Healthy Eating Challenge - Log balanced meals for 30 days</li>
+        <li>Hydration Challenge - Drink 2L water daily for 7 days</li>
+        <li>Ramadan Wellness Challenge - Maintain nutrition during Ramadan</li>
+        <li>Fasting Nutrition Challenge - Meet protein goals during Orthodox fasting</li>
+    </ul>
+    
+    <script>
+        function joinChallenge(challengeId) {
+            fetch('/api/challenges/join', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({challenge_id: challengeId})
+            }).then(r => r.json()).then(d => alert('Joined challenge!'));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Gebeta Nutrition{% endblock %}
+{% block page_title %}Today Dashboard{% endblock %}
+
+{% block content %}
+{% set calorie_target = 2200 %}
+{% set protein_target = 65 %}
+{% set water_target = 2500 %}
+{% set budget_target = user.daily_budget_etb or 150 %}
+{% set calories = stats.calories_consumed or 0 %}
+{% set protein = stats.protein_consumed or 0 %}
+{% set water = stats.water_intake_ml or 0 %}
+{% set spent = stats.budget_spent or 0 %}
+{% set calorie_pct = [((calories / calorie_target) * 100), 100]|min %}
+{% set protein_pct = [((protein / protein_target) * 100), 100]|min %}
+{% set water_pct = [((water / water_target) * 100), 100]|min %}
+{% set budget_pct = [((spent / budget_target) * 100), 100]|min if budget_target else 0 %}
+
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-[10px] font-black text-[#3b755f] uppercase tracking-wider">Daily wellness overview</p>
+            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Good to see you, {{ user.full_name.split()[0] if user.full_name else 'friend' }}.</h2>
+        </div>
+        <a href="{{ url_for('food_matrix') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#3b755f] px-4 py-3 text-xs font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2f604d] hover:shadow-lg">
+            <i class="fa-solid fa-plus"></i> Log a meal
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Calories eaten</span>
+                <span class="h-9 w-9 rounded-xl bg-[#3b755f]/10 text-[#3b755f] flex items-center justify-center"><i class="fa-solid fa-fire"></i></span>
+            </div>
+            <div class="mt-5 flex items-end gap-1">
+                <span class="text-3xl font-black">{{ calories }}</span>
+                <span class="pb-1 text-xs font-bold text-stone-400">/ {{ calorie_target }} kcal</span>
+            </div>
+            <div class="mt-4 h-2 rounded-full bg-stone-100 overflow-hidden">
+                <div class="h-full rounded-full bg-[#3b755f]" style="width: {{ calorie_pct }}%"></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Protein</span>
+                <span class="h-9 w-9 rounded-xl bg-[#C7E86A]/30 text-[#3b755f] flex items-center justify-center"><i class="fa-solid fa-dumbbell"></i></span>
+            </div>
+            <div class="mt-5 flex items-end gap-1">
+                <span class="text-3xl font-black">{{ protein }}</span>
+                <span class="pb-1 text-xs font-bold text-stone-400">/ {{ protein_target }} g</span>
+            </div>
+            <div class="mt-4 h-2 rounded-full bg-stone-100 overflow-hidden">
+                <div class="h-full rounded-full bg-[#C7E86A]" style="width: {{ protein_pct }}%"></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Water</span>
+                <span class="h-9 w-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center"><i class="fa-solid fa-droplet"></i></span>
+            </div>
+            <div class="mt-5 flex items-end gap-1">
+                <span class="text-3xl font-black">{{ (water / 1000)|round(1) }}</span>
+                <span class="pb-1 text-xs font-bold text-stone-400">/ 2.5 L</span>
+            </div>
+            <div class="mt-4 h-2 rounded-full bg-stone-100 overflow-hidden">
+                <div class="h-full rounded-full bg-sky-500" style="width: {{ water_pct }}%"></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Budget spent</span>
+                <span class="h-9 w-9 rounded-xl bg-[#3b755f]/10 text-[#3b755f] flex items-center justify-center"><i class="fa-solid fa-wallet"></i></span>
+            </div>
+            <div class="mt-5 flex items-end gap-1">
+                <span class="text-3xl font-black">{{ spent }}</span>
+                <span class="pb-1 text-xs font-bold text-stone-400">/ {{ budget_target }} ETB</span>
+            </div>
+            <div class="mt-4 h-2 rounded-full bg-stone-100 overflow-hidden">
+                <div class="h-full rounded-full bg-[#3b755f]" style="width: {{ budget_pct }}%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section class="lg:col-span-2 bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-5">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Simple progress chart</p>
+                    <h3 class="text-lg font-black">Daily targets</h3>
+                </div>
+                <span class="rounded-full bg-[#C7E86A]/30 px-3 py-1 text-[10px] font-black text-[#3b755f]">Live today</span>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <div class="mb-2 flex justify-between text-xs font-bold"><span>Calories</span><span>{{ calorie_pct|round(0) }}%</span></div>
+                    <div class="h-4 rounded-full bg-[#faf7f2] overflow-hidden"><div class="h-full rounded-full bg-[#3b755f]" style="width: {{ calorie_pct }}%"></div></div>
+                </div>
+                <div>
+                    <div class="mb-2 flex justify-between text-xs font-bold"><span>Protein</span><span>{{ protein_pct|round(0) }}%</span></div>
+                    <div class="h-4 rounded-full bg-[#faf7f2] overflow-hidden"><div class="h-full rounded-full bg-[#C7E86A]" style="width: {{ protein_pct }}%"></div></div>
+                </div>
+                <div>
+                    <div class="mb-2 flex justify-between text-xs font-bold"><span>Water</span><span>{{ water_pct|round(0) }}%</span></div>
+                    <div class="h-4 rounded-full bg-[#faf7f2] overflow-hidden"><div class="h-full rounded-full bg-sky-500" style="width: {{ water_pct }}%"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-[#1e2421] text-white rounded-2xl p-5 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-black text-[#C7E86A] uppercase tracking-wider">Fasting status</p>
+                    <h3 class="text-lg font-black">{{ fasting.fasting_name if fasting else 'No active fast' }}</h3>
+                </div>
+                <span class="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></span>
+            </div>
+            <p class="text-sm font-semibold text-stone-300">
+                {% if fasting %}
+                    Keep meals plant-forward today. Focus on legumes, grains, vegetables, and water.
+                {% else %}
+                    Your profile is not currently in a fasting period. You can still choose fasting-friendly meals.
+                {% endif %}
+            </p>
+            <div class="rounded-xl bg-white/10 border border-white/10 p-4">
+                <p class="text-[10px] font-black uppercase tracking-wider text-stone-400">Fasting streak</p>
+                <p class="mt-1 text-3xl font-black">{{ stats.fasting_streak or 0 }} days</p>
+            </div>
+        </section>
+    </div>
+
+    <section class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Meals logged today</p>
+                <h3 class="text-lg font-black">Today meal list</h3>
+            </div>
+            <a href="{{ url_for('food_matrix') }}" class="text-xs font-black text-[#3b755f] hover:text-[#1e2421] transition-colors">Add more</a>
+        </div>
+
+        <div class="space-y-3">
+            {% for meal in today_meals %}
+                <div class="flex items-center justify-between gap-3 rounded-2xl bg-[#faf7f2] border border-[#ebdcc5]/60 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="h-10 w-10 shrink-0 rounded-xl bg-[#3b755f]/10 text-[#3b755f] flex items-center justify-center"><i class="fa-solid fa-bowl-food"></i></span>
+                        <div class="min-w-0">
+                            <p class="text-sm font-black truncate">{{ meal.name_english }}</p>
+                            <p class="text-[11px] font-bold text-stone-400">{{ meal.meal_type|title }} - {{ meal.serving_size_g|round(0) }} g</p>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <p class="text-sm font-black text-[#3b755f]">{{ meal.total_calories|round(0) }} kcal</p>
+                        <p class="text-[11px] font-bold text-stone-400">{{ meal.total_protein|round(1) }} g protein</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="rounded-2xl bg-[#faf7f2] border border-dashed border-[#ebdcc5] p-6 text-center">
+                    <p class="text-sm font-black">No meals logged yet today.</p>
+                    <p class="mt-1 text-xs font-semibold text-stone-500">Start with injera, shiro, misir wot, or any food from the matrix.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

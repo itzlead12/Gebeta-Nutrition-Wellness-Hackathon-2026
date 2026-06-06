@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gebeta Nutrition{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        gebetaGreen: '#3b755f',
+                        gebetaLime: '#C7E86A',
+                        gebetaCream: '#faf7f2',
+                        gebetaDark: '#1e2421'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#faf7f2] text-[#1e2421] font-sans antialiased min-h-screen">
+    {% set endpoint = request.endpoint or '' %}
+
+    <aside class="hidden md:flex fixed inset-y-0 left-0 z-40 w-72 bg-[#1e2421] text-stone-300 flex-col">
+        <div class="p-5 border-b border-stone-800 flex items-center gap-3">
+            <img src="/static/img/logo.png" alt="Gebeta Nutrition Logo" class="h-9 w-auto object-contain" style="border-radius: 10px;">
+            <div>
+                <p class="text-sm font-black tracking-tight text-white">Gebeta Nutrition</p>
+                <p class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">{{ t('wellness_core') }}</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1 text-xs font-bold overflow-y-auto">
+            <a href="{{ url_for('dashboard_overview') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ 'bg-[#3b755f] text-white shadow-lg shadow-black/10' if endpoint == 'dashboard_overview' else 'text-stone-400 hover:bg-stone-800 hover:text-white hover:translate-x-1' }}"><i class="fa-solid fa-house w-4"></i> {{ t('nav_home') }}</a>
+            <a href="{{ url_for('food_matrix') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ 'bg-[#3b755f] text-white shadow-lg shadow-black/10' if endpoint == 'food_matrix' else 'text-stone-400 hover:bg-stone-800 hover:text-white hover:translate-x-1' }}"><i class="fa-solid fa-utensils w-4"></i> {{ t('nav_food') }}</a>
+            <a href="{{ url_for('ai_page') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ 'bg-[#3b755f] text-white shadow-lg shadow-black/10' if endpoint == 'ai_page' else 'text-stone-400 hover:bg-stone-800 hover:text-white hover:translate-x-1' }}"><i class="fa-solid fa-wand-magic-sparkles w-4"></i> {{ t('nav_ai') }}
+                {% if current_user_plan in ['free', 'plus'] %}
+                    <i class="fa-solid fa-lock text-[#C7E86A] text-[10px] ml-auto"></i>
+                {% endif %}
+            </a>
+            <a href="{{ url_for('fasting_calibrator') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ 'bg-[#3b755f] text-white shadow-lg shadow-black/10' if endpoint == 'fasting_calibrator' else 'text-stone-400 hover:bg-stone-800 hover:text-white hover:translate-x-1' }}"><i class="fa-solid fa-calendar-days w-4"></i> {{ t('nav_fasting') }}
+                {% if current_user_plan == 'free' %}
+                    <i class="fa-solid fa-lock text-stone-500 text-[10px] ml-auto"></i>
+                {% endif %}
+            </a>
+            <a href="{{ url_for('kitchen_assistant') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ 'bg-[#3b755f] text-white shadow-lg shadow-black/10' if endpoint == 'kitchen_assistant' else 'text-stone-400 hover:bg-stone-800 hover:text-white hover:translate-x-1' }}"><i class="fa-solid fa-kitchen-set w-4"></i> {{ t('nav_kitchen') }}
+                {% if current_user_plan == 'free' %}
+                    <i class="fa-solid fa-lock text-stone-500 text-[10px] ml-auto"></i>
+                {% endif %}
+            </a>
+            <a href="{{ url_for('budget_optimizer') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ 'bg-[#3b755f] text-white shadow-lg shadow-black/10' if endpoint == 'budget_optimizer' else 'text-stone-400 hover:bg-stone-800 hover:text-white hover:translate-x-1' }}"><i class="fa-solid fa-wallet w-4"></i> {{ t('nav_budget') }}
+                {% if current_user_plan == 'free' %}
+                    <i class="fa-solid fa-lock text-stone-500 text-[10px] ml-auto"></i>
+                {% endif %}
+            </a>
+            <a href="{{ url_for('family_hub') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ 'bg-[#3b755f] text-white shadow-lg shadow-black/10' if endpoint == 'family_hub' else 'text-stone-400 hover:bg-stone-800 hover:text-white hover:translate-x-1' }}"><i class="fa-solid fa-people-roof w-4"></i> {{ t('nav_family') }}
+                {% if current_user_plan in ['free', 'plus'] %}
+                    <i class="fa-solid fa-lock text-[#C7E86A] text-[10px] ml-auto"></i>
+                {% endif %}
+            </a>
+            <a href="{{ url_for('profile') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ 'bg-[#3b755f] text-white shadow-lg shadow-black/10' if endpoint == 'profile' else 'text-stone-400 hover:bg-stone-800 hover:text-white hover:translate-x-1' }}"><i class="fa-solid fa-user w-4"></i> {{ t('nav_profile') }}</a>
+        </nav>
+
+        <div class="p-4 border-t border-stone-800 space-y-3">
+            <!-- Language Switcher -->
+            <div class="flex items-center gap-2 justify-center">
+                <a href="{{ url_for('set_language', lang='english') }}"
+                   class="flex-1 text-center py-1.5 rounded-lg text-[10px] font-black transition-all duration-150
+                          {{ 'bg-[#3b755f] text-white' if current_lang == 'english' else 'text-stone-500 hover:text-white hover:bg-stone-700' }}">EN</a>
+                <a href="{{ url_for('set_language', lang='amharic') }}"
+                   class="flex-1 text-center py-1.5 rounded-lg text-[10px] font-black transition-all duration-150
+                          {{ 'bg-[#3b755f] text-white' if current_lang == 'amharic' else 'text-stone-500 hover:text-white hover:bg-stone-700' }}">አማ</a>
+                <a href="{{ url_for('set_language', lang='oromo') }}"
+                   class="flex-1 text-center py-1.5 rounded-lg text-[10px] font-black transition-all duration-150
+                          {{ 'bg-[#3b755f] text-white' if current_lang == 'oromo' else 'text-stone-500 hover:text-white hover:bg-stone-700' }}">ORM</a>
+            </div>
+            <a href="{{ url_for('logout') }}" class="w-full bg-stone-800 hover:bg-red-950/40 hover:text-red-300 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 font-bold text-xs">
+                <i class="fa-solid fa-power-off"></i> {{ t('nav_signout') }}
+            </a>
+        </div>
+    </aside>
+
+    <main class="min-h-screen md:pl-72 pb-24 md:pb-0">
+        <header class="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-[#ebdcc5]/70 px-4 md:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3 min-w-0">
+                <img src="/static/img/logo.png" alt="Gebeta Nutrition Logo" class="h-7 w-auto object-contain md:hidden" style="border-radius: 10px;">
+                <div class="min-w-0">
+                    <p class="text-[10px] uppercase tracking-wider font-black text-[#3b755f]">Gebeta Core</p>
+                    <h1 class="text-sm md:text-base font-black text-[#1e2421] truncate">{% block page_title %}Dashboard{% endblock %}</h1>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                {% block header_actions %}{% endblock %}
+                <div class="w-9 h-9 rounded-full bg-[#3b755f] text-white flex items-center justify-center font-black text-xs">
+                    {{ (session.get('user_name', 'GN')[:2])|upper }}
+                </div>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="fixed top-16 left-4 right-4 md:left-auto md:right-6 md:w-96 z-50 space-y-2">
+                    {% for category, message in messages %}
+                        <div class="rounded-2xl border px-4 py-3 text-xs font-bold shadow-lg {{ 'bg-[#3b755f] text-white border-[#3b755f]' if category == 'success' else 'bg-white text-[#1e2421] border-[#ebdcc5]' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <section class="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
+            {% block content %}{% endblock %}
+        </section>
+    </main>
+
+    <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-[#ebdcc5] px-2 pt-2 pb-3 grid grid-cols-5 gap-1">
+        <a href="{{ url_for('dashboard_overview') }}" class="flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-black transition-all {{ 'bg-[#3b755f] text-white' if endpoint == 'dashboard_overview' else 'text-stone-500 hover:text-[#3b755f] hover:bg-[#3b755f]/5' }}"><i class="fa-solid fa-house text-base"></i><span>{{ t('nav_home') }}</span></a>
+        <a href="{{ url_for('food_matrix') }}" class="flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-black transition-all {{ 'bg-[#3b755f] text-white' if endpoint == 'food_matrix' else 'text-stone-500 hover:text-[#3b755f] hover:bg-[#3b755f]/5' }}"><i class="fa-solid fa-utensils text-base"></i><span>{{ t('nav_food') }}</span></a>
+        <a href="{{ url_for('ai_page') }}" class="flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-black transition-all {{ 'bg-[#3b755f] text-white' if endpoint == 'ai_page' else 'text-stone-500 hover:text-[#3b755f] hover:bg-[#3b755f]/5' }}"><i class="fa-solid fa-wand-magic-sparkles text-base"></i><span>{{ t('nav_ai') }}</span></a>
+        <a href="{{ url_for('fasting_calibrator') }}" class="flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-black transition-all {{ 'bg-[#3b755f] text-white' if endpoint == 'fasting_calibrator' else 'text-stone-500 hover:text-[#3b755f] hover:bg-[#3b755f]/5' }}"><i class="fa-solid fa-calendar-days text-base"></i><span>{{ t('nav_fasting') }}</span></a>
+        <a href="{{ url_for('profile') }}" class="flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-black transition-all {{ 'bg-[#3b755f] text-white' if endpoint == 'profile' else 'text-stone-500 hover:text-[#3b755f] hover:bg-[#3b755f]/5' }}"><i class="fa-solid fa-user text-base"></i><span>{{ t('nav_profile') }}</span></a>
+    </nav>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

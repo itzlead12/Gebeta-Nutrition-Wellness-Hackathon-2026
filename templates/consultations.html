@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Consultations - Gebeta Nutrition</title>
+</head>
+<body>
+    <h1>My Consultations</h1>
+    
+    <div id="consultations-list">
+        {% for c in consultations %}
+        <div>
+            <h3>Consultation with {{ c.nutritionist_name }}</h3>
+            <p>Date: {{ c.consultation_date }}</p>
+            <p>Status: {{ c.status }}</p>
+            <p>Notes: {{ c.notes }}</p>
+            {% if c.meal_plan_json %}
+            <h4>Your Meal Plan:</h4>
+            <div>{{ c.meal_plan_json }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

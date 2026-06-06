@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings - Gebeta Nutrition</title>
+</head>
+<body>
+    <h1>App Settings</h1>
+    
+    <h2>Language Preferences</h2>
+    <form id="language-form">
+        <label>Preferred Language:
+            <select name="language">
+                <option value="english">English</option>
+                <option value="amharic">አማርኛ (Amharic)</option>
+                <option value="oromo">Afaan Oromo</option>
+                <option value="tigrinya">ትግርኛ (Tigrinya)</option>
+                <option value="somali">Somali</option>
+            </select>
+        </label>
+        <button type="submit">Save</button>
+    </form>
+    
+    <h2>Notification Preferences</h2>
+    <form id="notifications-form">
+        <label><input type="checkbox" name="meal_reminders"> Meal Reminders</label>
+        <label><input type="checkbox" name="fasting_alerts"> Fasting Alerts</label>
+        <label><input type="checkbox" name="hydration_reminders"> Hydration Reminders</label>
+        <label><input type="checkbox" name="weekly_reports"> Weekly Reports</label>
+        <button type="submit">Save</button>
+    </form>
+    
+    <h2>Data & Privacy</h2>
+    <button onclick="exportData()">Export My Data</button>
+    <button onclick="deleteAccount()">Delete Account</button>
+    
+    <h2>About</h2>
+    <p>Gebeta Nutrition v1.0</p>
+    <p>Developed in Addis Ababa, Ethiopia</p>
+    <a href="/">Home</a>
+    
+    <script>
+        function exportData() {
+            fetch('/api/user/export')
+                .then(r => r.json())
+                .then(data => {
+                    const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'gebeta-data.json';
+                    a.click();
+                });
+        }
+        
+        function deleteAccount() {
+            if (confirm('Are you sure? This cannot be undone.')) {
+                fetch('/api/user/delete', {method: 'DELETE'})
+                    .then(() => window.location.href = '/logout');
+            }
+        }
+    </script>
+</body>
+</html>

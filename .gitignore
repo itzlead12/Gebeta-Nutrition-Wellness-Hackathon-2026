@@ -1,0 +1,16 @@
+# Environment variables
+.env
+
+# SQLite Databases
+instance/*.db
+instance/*.db-journal
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+env/

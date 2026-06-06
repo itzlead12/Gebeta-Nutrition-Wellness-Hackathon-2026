@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Fasting - Gebeta Nutrition{% endblock %}
+{% block page_title %}Fasting Calendar{% endblock %}
+
+{% block content %}
+{% if current_user_plan in ['plus', 'premium'] %}
+{% set period = active_fast or current_period %}
+
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-[10px] font-black text-[#3b755f] uppercase tracking-wider">Tsom support</p>
+            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Plan meals around fasting days.</h2>
+        </div>
+        <a href="{{ url_for('food_matrix', fasting_only='1') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#3b755f] px-4 py-3 text-xs font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2f604d] hover:shadow-lg">
+            <i class="fa-solid fa-leaf"></i> Fasting foods
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section class="lg:col-span-2 bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Current month</p>
+                    <h3 class="text-lg font-black">{{ month_label }}</h3>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] font-black text-stone-500">
+                    <span class="h-3 w-3 rounded-full bg-[#3b755f]"></span> Fasting day
+                </div>
+            </div>
+
+            <div class="grid grid-cols-7 gap-2 text-center text-[10px] font-black uppercase tracking-wider text-stone-400">
+                <span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+            </div>
+
+            <div class="grid grid-cols-7 gap-2">
+                {% for day in calendar_days %}
+                    {% if day.day %}
+                        <div title="{{ day.fasting_name if day.is_fasting else '' }}" class="aspect-square rounded-2xl border flex flex-col items-center justify-center text-sm font-black transition-all duration-200 hover:-translate-y-0.5 {{ 'bg-[#3b755f] text-white border-[#3b755f] shadow-md' if day.is_fasting else 'bg-[#faf7f2] text-[#1e2421] border-[#ebdcc5]/70 hover:border-[#3b755f]/40' }} {{ 'ring-4 ring-[#C7E86A]/40' if day.is_today else '' }}">
+                            <span>{{ day.day }}</span>
+                            {% if day.is_fasting %}
+                                <span class="mt-1 h-1.5 w-1.5 rounded-full bg-[#C7E86A]"></span>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="aspect-square rounded-2xl bg-transparent"></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="bg-[#1e2421] text-white rounded-2xl p-5 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-black text-[#C7E86A] uppercase tracking-wider">Current fasting period</p>
+                    <h3 class="text-xl font-black">{{ period.fasting_name if period else 'No active period' }}</h3>
+                </div>
+                <span class="h-11 w-11 rounded-xl bg-white/10 flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></span>
+            </div>
+            {% if period %}
+                <p class="text-sm font-semibold text-stone-300">{{ period.description }}</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                        <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Starts</p>
+                        <p class="mt-1 text-sm font-black">{{ period.start_date }}</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                        <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Ends</p>
+                        <p class="mt-1 text-sm font-black">{{ period.end_date }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-sm font-semibold text-stone-300">No seeded fast covers today. Upcoming fasting periods are listed below.</p>
+            {% endif %}
+        </section>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-4">
+            <div>
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Allowed foods</p>
+                <h3 class="text-lg font-black">During fasting</h3>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                {% if period and period.allowed_foods %}
+                    {% for item in period.allowed_foods.split(',') %}
+                        <span class="rounded-full bg-[#3b755f]/10 px-4 py-2 text-xs font-black text-[#3b755f] capitalize">{{ item.replace('_', ' ') }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="rounded-full bg-[#3b755f]/10 px-4 py-2 text-xs font-black text-[#3b755f]">Legumes</span>
+                    <span class="rounded-full bg-[#3b755f]/10 px-4 py-2 text-xs font-black text-[#3b755f]">Grains</span>
+                    <span class="rounded-full bg-[#3b755f]/10 px-4 py-2 text-xs font-black text-[#3b755f]">Vegetables</span>
+                {% endif %}
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {% for food_name in ['Shiro Wot', 'Misir Wot', 'Gomen', 'Atkilt Wot'] %}
+                    <div class="rounded-2xl bg-[#faf7f2] border border-[#ebdcc5]/60 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+                        <p class="text-sm font-black">{{ food_name }}</p>
+                        <p class="mt-1 text-xs font-semibold text-stone-500">Plant-forward and budget friendly.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-4">
+            <div>
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Calendar list</p>
+                <h3 class="text-lg font-black">Upcoming fasting periods</h3>
+            </div>
+            <div class="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                {% for fast in fasts %}
+                    <div class="rounded-2xl bg-[#faf7f2] border border-[#ebdcc5]/60 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-black">{{ fast.fasting_name }}</p>
+                                <p class="text-[11px] font-bold text-stone-400 capitalize">{{ fast.religion }} - {{ fast.fasting_type.replace('_', ' ') if fast.fasting_type else 'fast' }}</p>
+                            </div>
+                            <span class="rounded-full bg-[#C7E86A]/30 px-3 py-1 text-[10px] font-black text-[#3b755f]">{{ fast.start_date }}</span>
+                        </div>
+                        <p class="mt-3 text-xs font-semibold text-stone-500">{{ fast.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+{% else %}
+<div class="max-w-xl mx-auto my-12 bg-white rounded-3xl border border-[#ebdcc5] p-8 text-center space-y-6 shadow-lg">
+    <div class="w-16 h-16 bg-[#3b755f]/10 text-[#3b755f] rounded-2xl flex items-center justify-center mx-auto text-2xl">
+        <i class="fa-solid fa-calendar-days"></i>
+    </div>
+    <div class="space-y-2">
+        <span class="text-[10px] font-black uppercase tracking-wider bg-[#3b755f]/10 text-[#3b755f] px-3 py-1 rounded-full">Plus feature</span>
+        <h2 class="text-3xl font-black tracking-tight text-[#1e2421]">Fasting Calibrator is locked.</h2>
+        <p class="text-sm font-semibold text-gray-500 max-w-sm mx-auto">
+            Upgrade to the <strong class="text-[#3b755f]">Plus Plan</strong> to unlock interactive Orthodox & Muslim fasting schedules, fasting streaks, and automated menu adaptation.
+        </p>
+    </div>
+    <hr class="border-[#ebdcc5]/60">
+    <div class="space-y-4">
+        <a href="{{ url_for('select_plan') }}" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-xl bg-[#3b755f] hover:bg-[#2f604d] text-xs font-black text-white shadow-md hover:shadow-lg transition-all duration-200">
+            Upgrade to Plus for 199 ETB/mo
+        </a>
+        <p class="text-[10px] font-bold text-gray-400">Cancel or switch tiers anytime in your profile page.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

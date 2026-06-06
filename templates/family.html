@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Family - Gebeta Nutrition{% endblock %}
+{% block page_title %}Family Hub{% endblock %}
+
+{% block content %}
+{% if current_user_plan == 'premium' %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-[10px] font-black text-[#3b755f] uppercase tracking-wider">Shared wellness</p>
+            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Plan meals for everyone at home.</h2>
+        </div>
+        <a href="{{ url_for('dashboard_overview') }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-[#ebdcc5] bg-white px-4 py-3 text-xs font-black text-[#1e2421] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3b755f] hover:text-[#3b755f]">
+            <i class="fa-solid fa-house"></i> Home
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-6">
+        <section class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-5">
+            <div>
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Add family member</p>
+                <h3 class="text-lg font-black">Member profile</h3>
+            </div>
+
+            <form id="add-member-form" class="space-y-4">
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <label class="block space-y-2">
+                        <span class="text-xs font-black uppercase tracking-wider text-stone-500">Name</span>
+                        <input type="text" id="name" required class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                    </label>
+                    <label class="block space-y-2">
+                        <span class="text-xs font-black uppercase tracking-wider text-stone-500">Relationship</span>
+                        <input type="text" id="relationship" required placeholder="Parent, child, spouse" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                    </label>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <label class="block space-y-2">
+                        <span class="text-xs font-black uppercase tracking-wider text-stone-500">Age</span>
+                        <input type="number" id="age" min="0" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                    </label>
+                    <label class="block space-y-2">
+                        <span class="text-xs font-black uppercase tracking-wider text-stone-500">Gender</span>
+                        <select id="gender" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Prefer not to say</option>
+                        </select>
+                    </label>
+                </div>
+
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Medical conditions</span>
+                    <input type="text" id="medical" placeholder="Diabetes, hypertension, allergies" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                </label>
+
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-stone-500">Dietary restrictions</span>
+                    <input type="text" id="dietary" placeholder="Vegan, low salt, no dairy" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                </label>
+
+                <div class="grid sm:grid-cols-[auto_1fr] gap-4 items-end">
+                    <label class="flex items-center gap-3 rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3">
+                        <input type="checkbox" id="fasting" class="h-4 w-4 rounded border-[#ebdcc5] text-[#3b755f] focus:ring-[#3b755f]">
+                        <span class="text-sm font-black">Currently fasting</span>
+                    </label>
+                    <label class="block space-y-2">
+                        <span class="text-xs font-black uppercase tracking-wider text-stone-500">Fasting type</span>
+                        <select id="fasting-type" class="w-full rounded-xl border border-[#ebdcc5] bg-[#faf7f2] px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#3b755f] focus:ring-4 focus:ring-[#3b755f]/10">
+                            <option>Orthodox Vegan</option>
+                            <option>Ramadan</option>
+                            <option>Wednesday and Friday</option>
+                        </select>
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full rounded-xl bg-[#3b755f] px-4 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2f604d] hover:shadow-lg">
+                    Add Family Member
+                </button>
+            </form>
+        </section>
+
+        <section class="bg-white rounded-2xl border border-[#ebdcc5]/70 p-5 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-black text-stone-400 uppercase tracking-wider">Family members</p>
+                    <h3 class="text-lg font-black">{{ members|length }} saved</h3>
+                </div>
+                <span class="h-11 w-11 rounded-xl bg-[#3b755f]/10 text-[#3b755f] flex items-center justify-center"><i class="fa-solid fa-people-roof"></i></span>
+            </div>
+
+            <div id="members-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {% for member in members %}
+                    <article class="rounded-2xl bg-[#faf7f2] border border-[#ebdcc5]/60 p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-black">{{ member.name }}</p>
+                                <p class="text-[11px] font-bold text-stone-400">{{ member.relationship }}{% if member.age %} - {{ member.age }} yrs{% endif %}</p>
+                            </div>
+                            <span class="rounded-full px-3 py-1 text-[10px] font-black {{ 'bg-[#3b755f] text-white' if member.is_fasting else 'bg-white text-stone-500' }}">{{ 'Fasting' if member.is_fasting else 'Regular' }}</span>
+                        </div>
+                        <div class="mt-4 space-y-2 text-xs font-semibold text-stone-600">
+                            <p><span class="font-black text-[#1e2421]">Medical:</span> {{ member.medical_conditions or 'None listed' }}</p>
+                            <p><span class="font-black text-[#1e2421]">Diet:</span> {{ member.dietary_restrictions or 'No restrictions' }}</p>
+                            {% if member.fasting_type %}
+                                <p><span class="font-black text-[#1e2421]">Fast:</span> {{ member.fasting_type }}</p>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% else %}
+                    <div class="sm:col-span-2 rounded-2xl bg-[#faf7f2] border border-dashed border-[#ebdcc5] p-8 text-center">
+                        <p class="text-sm font-black">No family members yet.</p>
+                        <p class="mt-1 text-xs font-semibold text-stone-500">Add the first profile to personalize family meals.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+{% else %}
+<div class="max-w-xl mx-auto my-12 bg-[#1e2421] text-white rounded-3xl border border-white/10 p-8 text-center space-y-6 shadow-xl">
+    <div class="w-16 h-16 bg-[#C7E86A]/20 text-[#C7E86A] rounded-2xl flex items-center justify-center mx-auto text-2xl">
+        <i class="fa-solid fa-people-roof"></i>
+    </div>
+    <div class="space-y-2">
+        <span class="text-[10px] font-black uppercase tracking-wider bg-[#C7E86A]/20 text-[#C7E86A] px-3 py-1 rounded-full">Premium feature</span>
+        <h2 class="text-3xl font-black tracking-tight">Family Hub is locked.</h2>
+        <p class="text-sm font-semibold text-stone-400 max-w-sm mx-auto">
+            Upgrade to <strong class="text-[#C7E86A]">Premium</strong> to manage individual wellness profiles for every member of your household with fasting, diet, and medical tracking.
+        </p>
+    </div>
+    <hr class="border-white/10">
+    <div class="space-y-4">
+        <a href="{{ url_for('select_plan') }}" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-xl bg-[#C7E86A] hover:bg-[#b5d656] text-xs font-black text-[#1e2421] shadow-md hover:shadow-lg transition-all duration-200">
+            Upgrade to Premium for 499 ETB/mo
+        </a>
+        <p class="text-[10px] font-bold text-stone-500">Cancel or switch tiers anytime in your profile page.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('add-member-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const button = this.querySelector('button[type="submit"]');
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Adding...';
+
+        try {
+            const response = await fetch('/api/family/add', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: document.getElementById('name').value,
+                    relationship: document.getElementById('relationship').value,
+                    age: document.getElementById('age').value,
+                    gender: document.getElementById('gender').value,
+                    medical_conditions: document.getElementById('medical').value,
+                    dietary_restrictions: document.getElementById('dietary').value,
+                    is_fasting: document.getElementById('fasting').checked ? 1 : 0,
+                    fasting_type: document.getElementById('fasting-type').value
+                })
+            });
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error('Unable to add member');
+            location.reload();
+        } catch (error) {
+            alert(error.message);
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    });
+</script>
+{% endblock %}

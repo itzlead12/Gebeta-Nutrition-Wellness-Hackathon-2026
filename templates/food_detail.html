@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Details - Gebeta Nutrition</title>
+</head>
+<body>
+    <h1>Food Details</h1>
+    <div>
+        <h2>{{ food.name_english }}</h2>
+        <p>Amharic: {{ food.name_amharic }}</p>
+        <p>Oromo: {{ food.name_oromo }}</p>
+        <p>Tigrinya: {{ food.name_tigrinya }}</p>
+        <p>Category: {{ food.food_category }}</p>
+        <p>Region: {{ food.region_of_origin }}</p>
+    </div>
+    
+    <h3>Macronutrients (per 100g)</h3>
+    <p>Calories: {{ food.calories_per_100g }}</p>
+    <p>Protein: {{ food.protein_g }}g</p>
+    <p>Carbohydrates: {{ food.carbs_g }}g</p>
+    <p>Fat: {{ food.fat_g }}g</p>
+    <p>Fiber: {{ food.fiber_g }}g</p>
+    
+    <h3>Micronutrients</h3>
+    <p>Iron: {{ food.iron_mg }}mg</p>
+    <p>Calcium: {{ food.calcium_mg }}mg</p>
+    <p>Sodium: {{ food.sodium_mg }}mg</p>
+    <p>Vitamin D: {{ food.vitamin_d_iu }} IU</p>
+    <p>Vitamin B12: {{ food.vitamin_b12_mcg }}mcg</p>
+    
+    <h3>Glycemic Impact</h3>
+    <p>Glycemic Index: {{ food.glycemic_index }}</p>
+    <p>Glycemic Load: {{ food.glycemic_load }}</p>
+    
+    <h3>Additional Info</h3>
+    <p>Fasting Compatible: {{ 'Yes' if food.is_fasting_compatible else 'No' }}</p>
+    <p>Vegan: {{ 'Yes' if food.is_vegan else 'No' }}</p>
+    <p>Typical Serving: {{ food.typical_serving_g }}g</p>
+    <p>Common Meal Time: {{ food.common_meal_time }}</p>
+    <p>Average Price: {{ food.avg_price_per_kg_etb }} ETB/kg</p>
+    
+    <button onclick="logMeal({{ food.id }})">Log This Meal</button>
+    <button onclick="addToFavorites({{ food.id }})">Add to Favorites</button>
+    <a href="/dashboard/food">Back to Food Database</a>
+    
+    <script>
+        function logMeal(foodId) {
+            const serving = prompt("Serving size (g):", "{{ food.typical_serving_g }}");
+            fetch('/api/meals/log', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    food_id: foodId,
+                    serving_size_g: parseFloat(serving),
+                    meal_type: 'lunch'
+                })
+            }).then(r => r.json()).then(d => alert('Logged: ' + d.calories + ' kcal'));
+        }
+        
+        function addToFavorites(foodId) {
+            fetch('/api/favorites/add', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({food_id: foodId})
+            }).then(r => r.json()).then(d => alert('Added to favorites!'));
+        }
+    </script>
+</body>
+</html>

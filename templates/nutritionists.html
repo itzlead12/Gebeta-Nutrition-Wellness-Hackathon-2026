@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Nutritionists - Gebeta Nutrition</title>
+</head>
+<body>
+    <h1>Nutritionist Marketplace</h1>
+    <p>Connect with certified Ethiopian nutrition professionals</p>
+    
+    <div>
+        <input type="text" id="search" placeholder="Search by name or specialization">
+        <button onclick="searchNutritionists()">Search</button>
+    </div>
+    
+    <div id="nutritionists-list">
+        {% for n in nutritionists %}
+        <div>
+            <h3>{{ n.full_name }}</h3>
+            <p>Specialization: {{ n.specialization }}</p>
+            <p>Experience: {{ n.years_experience }} years</p>
+            <p>Rating: {{ n.rating }}/5</p>
+            <p>Consultation Fee: {{ n.consultation_fee_etb }} ETB</p>
+            <p>{{ n.bio }}</p>
+            <button onclick="bookConsultation({{ n.id }})">Book Consultation</button>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <script>
+        function searchNutritionists() {
+            const query = document.getElementById('search').value;
+            fetch('/api/nutritionists/search?q=' + query)
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('nutritionists-list').innerHTML = 
+                        data.map(n => `
+                            <div>
+                                <h3>${n.full_name}</h3>
+                                <p>Specialization: ${n.specialization}</p>
+                                <p>Experience: ${n.years_experience} years</p>
+                                <p>Rating: ${n.rating}/5</p>
+                                <p>Fee: ${n.consultation_fee_etb} ETB</p>
+                                <button onclick="bookConsultation(${n.id})">Book</button>
+                            </div>
+                        `).join('');
+                });
+        }
+        
+        function bookConsultation(nutritionistId) {
+            const date = prompt("Preferred date (YYYY-MM-DD):");
+            fetch('/api/consultations/book', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    nutritionist_id: nutritionistId,
+                    consultation_date: date
+                })
+            }).then(r => r.json()).then(d => alert('Consultation booked!'));
+        }
+    </script>
+</body>
+</html>
